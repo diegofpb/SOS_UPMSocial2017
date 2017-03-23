@@ -33,8 +33,6 @@ public class BBDD {
 			String password = "dieguito1";
 
 			connection = DriverManager.getConnection(url, username, password);
-			System.out.println("Conexion establecida con la BD " + serverName);
-
 			
 			// STEP 3: ACCEDER A DATOS Y CONSULTAS DE LA BASE DE DATOS //
 			statement1 = connection.createStatement();
@@ -55,7 +53,6 @@ public class BBDD {
 			statement1.close();
 			connection.close();
 			resultSet.close();
-			System.out.println("Liberados recursos y cerrada conexión.");
 			
 		
 			
@@ -77,7 +74,6 @@ public class BBDD {
 
 		finally {
 			try {
-				System.out.println("Ejecuto finally \n");
 				if (resultSet != null)
 					resultSet.close();
 				if (statement1 != null)

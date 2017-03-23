@@ -1,13 +1,12 @@
 package com.upmsocial;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -23,7 +22,7 @@ public class Usuarios {
 
 
 	@GET
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response sayPlainTextHello() throws SQLException {
 		
 		BBDD newQuery = new BBDD();
@@ -33,7 +32,7 @@ public class Usuarios {
 		
 		for (Map<String, Object> map : result) {
 			 
-			respuesta = respuesta+(String) map.get("username")+"\n";
+			respuesta = respuesta+(String) map.toString()+"\n";
 		}
 		
 		
@@ -43,4 +42,6 @@ public class Usuarios {
 	}
 
 }
+
+
 
