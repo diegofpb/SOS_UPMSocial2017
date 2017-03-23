@@ -55,7 +55,7 @@ public class TipoPost {
         this.description = description;
     }
     
-    // Por qué constructor vacío ??
+    // Por quÃ© constructor vacÃ­o ??
 
 	// Tiene que tener id (int), username (string), date_post (timestamp), url
 	// (varchar), description (String).
