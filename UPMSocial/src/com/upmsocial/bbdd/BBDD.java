@@ -63,14 +63,23 @@ public class BBDD {
 	
 	}
 	
+	// Crea un usuario
 	public Response addUser(TipoUser user, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
-		int res;
 		try {
-			res = sta.executeUpdate("INSERT INTO `RestBBDD`.`USERS` (`username`, `nombre`, `surname`)"
-					+ " VALUES ('"+user.getUsername()+"', '"+user.getNombre()+"', '"+user.getSurname()+"');");
+			
+			// Verificamos que el Username no está vacó (Único obligatorio)
+			if (user.getUsername()!=null){
+				int res = sta.executeUpdate("INSERT INTO `RestBBDD`.`USERS` (`username`, `nombre`, `surname`)"
+						+ " VALUES ('"+user.getUsername()+"', '"+user.getNombre()+"', '"+user.getSurname()+"');");
+			}else{
+				return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+			}
+				
+			
+			
 		} catch (SQLException e) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
 		}
@@ -80,8 +89,8 @@ public class BBDD {
 		return Response.status(Response.Status.CREATED).header("Location", uri).build();
 	}
 
-	// Edita un usuario.
 	
+	// Edita un usuario.
 	public ResultSet editUser (TipoUser usuario){
 		
 		
