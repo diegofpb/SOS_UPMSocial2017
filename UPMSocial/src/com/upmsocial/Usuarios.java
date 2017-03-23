@@ -51,7 +51,7 @@ public class Usuarios {
 		if (!res.next()) {        
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}else{
-			User.setNombre(res.getString(1));
+			User.setName(res.getString(1));
 			User.setSurname(res.getString(2));
 			User.setUsername(res.getString(3));					
 		}
@@ -89,7 +89,7 @@ public class Usuarios {
 		if (!res.next()) {        
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}else{
-			User.setNombre(res.getString(1));
+			User.setName(res.getString(1));
 			User.setSurname(res.getString(2));
 			User.setUsername(res.getString(3));					
 		}

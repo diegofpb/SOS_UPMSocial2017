@@ -41,7 +41,7 @@ public class BBDD {
         
 			User Usuario = new User();
 			
-			Usuario.setNombre(res.getString(1));
+			Usuario.setName(res.getString(1));
 			Usuario.setSurname(res.getString(2));
 			Usuario.setUsername(res.getString(3));
 			
@@ -73,7 +73,7 @@ public class BBDD {
 			// Verificamos que el Username no está vacó (Único obligatorio)
 			if (user.getUsername()!=null){
 				int res = sta.executeUpdate("INSERT INTO `RestBBDD`.`USERS` (`username`, `nombre`, `surname`)"
-						+ " VALUES ('"+user.getUsername()+"', '"+user.getNombre()+"', '"+user.getSurname()+"');");
+						+ " VALUES ('"+user.getUsername()+"', '"+user.getName()+"', '"+user.getSurname()+"');");
 			}else{
 				return Response.status(Response.Status.NOT_ACCEPTABLE).build();
 			}

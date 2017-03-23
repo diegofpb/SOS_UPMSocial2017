@@ -5,16 +5,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "user")
 public class User {
 
-    private String nombre;
+    private String name;
     private String surname;
     private String username;
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String nombre) {
+        this.name = nombre;
     }
    
 	public String getSurname() {
@@ -37,9 +37,9 @@ public class User {
 
     }
 
-    public User(String nombre,String surname, String username) {
+    public User(String name,String surname, String username) {
         super();
-        this.nombre = nombre;
+        this.name = name;
         this.surname = surname;
         this.username = username;
     }
