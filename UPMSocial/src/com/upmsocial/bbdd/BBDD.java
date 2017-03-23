@@ -24,7 +24,7 @@ public class BBDD {
 	}
 	
 	// Devuelve todos los usuarios.
-	public List<TipoUser> Usuarios() throws ClassNotFoundException, SQLException{
+	public List<TipoUser> getUsers() throws ClassNotFoundException, SQLException{
 		
 		List<TipoUser> Usuarios = new ArrayList<TipoUser>();
 		
@@ -49,7 +49,7 @@ public class BBDD {
 	}
 		
 	// Devuelve un usuario.
-	public ResultSet Usuario (String username) throws ClassNotFoundException, SQLException {
+	public ResultSet getUser (String username) throws ClassNotFoundException, SQLException {
 		
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
@@ -59,4 +59,14 @@ public class BBDD {
 	
 	}
 
+	// Edita un usuario.
+	
+	public ResultSet editUser (TipoUser usuario){
+		
+		
+		return null;
+	}
+
+	
+	
 }

@@ -3,7 +3,10 @@ package com.upmsocial;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -28,7 +31,7 @@ public class Usuarios {
 	public List<TipoUser> getUsers() throws ClassNotFoundException, SQLException  {
 		
 		BBDD bdconn = new BBDD();
-		List<TipoUser> users = bdconn.Usuarios();
+		List<TipoUser> users = bdconn.getUsers();
 	    return users;
 	}
 	
@@ -39,9 +42,37 @@ public class Usuarios {
     public Response getUser(@PathParam("username") String username) throws ClassNotFoundException, SQLException {
 		
 		BBDD bdconn = new BBDD();
-		ResultSet res = bdconn.Usuario(username); 
+		ResultSet res = bdconn.getUser(username); 
 		
 		TipoUser User = new TipoUser();
+		 
+		if (!res.next()) {        
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}else{
+			User.setNombre(res.getString(1));
+			User.setSurname(res.getString(2));
+			User.setUsername(res.getString(3));					
+		}
+		
+        return Response.status(Response.Status.OK).entity(User)
+        .header("Location", uriInfo.getAbsolutePath().toString()).build();
+    }
+	
+	
+	@PUT
+	@Path("{username}")
+    @Produces(MediaType.APPLICATION_XML)
+	@Consumes(MediaType.APPLICATION_XML)
+    public Response putUser(@PathParam("username") String username,
+    		@PathParam("nombre") String nombre,
+    		@PathParam("surname") String surname) throws ClassNotFoundException, SQLException {
+		
+		TipoUser User = new TipoUser();
+
+		
+		BBDD bdconn = new BBDD();
+		ResultSet res = bdconn.editUser(User); 
+		
 		 
 		if (!res.next()) {        
 			return Response.status(Response.Status.BAD_REQUEST).build();
