@@ -3,6 +3,10 @@ package com.upmsocial.bbdd;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import com.upmsocial.models.TipoUser;
 
 
@@ -57,6 +61,23 @@ public class BBDD {
 		
 		return res;
 	
+	}
+	
+	public Response addUser(TipoUser user, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		int res;
+		try {
+			res = sta.executeUpdate("INSERT INTO `RestBBDD`.`USERS` (`username`, `nombre`, `surname`)"
+					+ " VALUES ('"+user.getUsername()+"', '"+user.getNombre()+"', '"+user.getSurname()+"');");
+		} catch (SQLException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+		}
+
+		String uri = uriInfo.getAbsolutePath().toString() + "/usuarios/" + user.getUsername();
+
+		return Response.status(Response.Status.CREATED).header("Location", uri).build();
 	}
 
 	// Edita un usuario.
