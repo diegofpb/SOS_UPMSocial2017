@@ -48,7 +48,15 @@ public class BBDD {
 		return Usuarios;
 	}
 		
-
-
+	// Devuelve un usuario.
+	public ResultSet Usuario (String username) throws ClassNotFoundException, SQLException {
+		
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+username+"';");
+		
+		return res;
+	
+	}
 
 }
