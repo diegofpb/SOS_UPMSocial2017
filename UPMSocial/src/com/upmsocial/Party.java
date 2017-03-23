@@ -25,7 +25,7 @@ public class Party {
 	@Produces(MediaType.TEXT_HTML)
 	public String saludoHtml(@PathParam("nombre") String n, 
 	                         @PathParam("apellidos") String a) {
-	    return "<html>" + "<title>" + "Hola JAX-RS" + "</title>" + "<body><h1>" +
+	    return "<html>" + "<title>" + "Hola JAXXX" + "</title>" + "<body><h1>" +
 	            "Hola " + n + " " + a + " " +
 	            "</h1></body></html> ";
 	}
