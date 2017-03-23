@@ -7,7 +7,7 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import com.upmsocial.models.TipoUser;
+import com.upmsocial.models.User;
 
 
 
@@ -28,9 +28,9 @@ public class BBDD {
 	}
 	
 	// Devuelve todos los usuarios.
-	public List<TipoUser> getUsers() throws ClassNotFoundException, SQLException{
+	public List<User> getUsers() throws ClassNotFoundException, SQLException{
 		
-		List<TipoUser> Usuarios = new ArrayList<TipoUser>();
+		List<User> Usuarios = new ArrayList<User>();
 		
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
@@ -39,7 +39,7 @@ public class BBDD {
  
 		while (res.next()) {
         
-			TipoUser Usuario = new TipoUser();
+			User Usuario = new User();
 			
 			Usuario.setNombre(res.getString(1));
 			Usuario.setSurname(res.getString(2));
@@ -64,7 +64,7 @@ public class BBDD {
 	}
 	
 	// Crea un usuario
-	public Response addUser(TipoUser user, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
+	public Response addUser(User user, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
@@ -91,7 +91,7 @@ public class BBDD {
 
 	
 	// Edita un usuario.
-	public ResultSet editUser (TipoUser usuario){
+	public ResultSet editUser (User usuario){
 		
 		
 		return null;

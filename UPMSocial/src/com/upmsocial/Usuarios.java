@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import com.upmsocial.bbdd.BBDD;
-import com.upmsocial.models.TipoUser;
+import com.upmsocial.models.User;
 
 
 @Path("/usuarios")
@@ -30,10 +30,10 @@ public class Usuarios {
 
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	public List<TipoUser> getUsers() throws ClassNotFoundException, SQLException  {
+	public List<User> getUsers() throws ClassNotFoundException, SQLException  {
 		
 		BBDD bdconn = new BBDD();
-		List<TipoUser> users = bdconn.getUsers();
+		List<User> users = bdconn.getUsers();
 	    return users;
 	}
 	
@@ -46,7 +46,7 @@ public class Usuarios {
 		BBDD bdconn = new BBDD();
 		ResultSet res = bdconn.getUser(username); 
 		
-		TipoUser User = new TipoUser();
+		User User = new User();
 		 
 		if (!res.next()) {        
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -66,7 +66,7 @@ public class Usuarios {
 	         @FormParam("username") String username,
 	         @FormParam("nombre") String nombre,
 	         @FormParam("surname") String surname) throws ClassNotFoundException, SQLException {
-	     TipoUser user = new TipoUser(nombre, surname, username);
+	     User user = new User(nombre, surname, username);
 	     BBDD con = new BBDD();
 	     return con.addUser(user,uriInfo);
 	 }
@@ -79,7 +79,7 @@ public class Usuarios {
     		@PathParam("nombre") String nombre,
     		@PathParam("surname") String surname) throws ClassNotFoundException, SQLException {
 		
-		TipoUser User = new TipoUser();
+		User User = new User();
 
 		
 		BBDD bdconn = new BBDD();

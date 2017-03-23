@@ -2,8 +2,8 @@ package com.upmsocial.models;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "tipo_user")
-public class TipoUser {
+@XmlRootElement(name = "user")
+public class User {
 
     private String nombre;
     private String surname;
@@ -33,11 +33,11 @@ public class TipoUser {
 		this.username = username;
 	}
 
-    public TipoUser() {
+    public User() {
 
     }
 
-    public TipoUser(String nombre,String surname, String username) {
+    public User(String nombre,String surname, String username) {
         super();
         this.nombre = nombre;
         this.surname = surname;
