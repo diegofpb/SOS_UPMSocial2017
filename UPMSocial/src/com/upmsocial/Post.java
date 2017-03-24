@@ -18,7 +18,7 @@ import com.upmsocial.bbdd.BBDD;
 import com.upmsocial.models.TipoPost;
 import com.upmsocial.models.User;
 
-@Path("/Post")
+@Path("/post")
 public class Post {
 	
 	@Context
