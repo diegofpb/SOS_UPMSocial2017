@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import com.upmsocial.models.TipoPost;
 import com.upmsocial.models.User;
 
 
@@ -15,61 +16,80 @@ public class BBDD {
 
 	// Función para establecer conexión con BBDD.
 	private Connection UPMConnection () throws ClassNotFoundException, SQLException{
-		
+
 		Class.forName("com.mysql.jdbc.Driver");
-		
+
 		String serverName = "diegofpb.asuscomm.com:3306";
 		String mydatabase = "RestBBDD";
 		String url = "jdbc:mysql://" + serverName + "/" + mydatabase;
 		String username = "upmsocialapi";
 		String password = "dieguito1";
-	
+
 		return DriverManager.getConnection(url, username, password);
 	}
-	
+
+	public int newIdPost() throws ClassNotFoundException, SQLException{
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS");
+		TipoPost post = new TipoPost();
+
+		try{ 
+			if(res.next())
+				post.setId(res.getInt(2));
+		}catch (SQLException e){
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		int i = post.getId();
+		return i;
+	}
+
 	// Devuelve todos los usuarios.
 	public List<User> getUsers() throws ClassNotFoundException, SQLException{
-		
+
 		List<User> Usuarios = new ArrayList<User>();
-		
+
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS");
-		
- 
+
+
 		while (res.next()) {
-        
+
 			User Usuario = new User();
-			
+
 			Usuario.setName(res.getString(1));
 			Usuario.setSurname(res.getString(2));
 			Usuario.setUsername(res.getString(3));
-			
+
 			Usuarios.add(Usuario);
 
 		}
-		
+
 		return Usuarios;
 	}
-		
+
 	// Devuelve un usuario.
 	public ResultSet getUser (String username) throws ClassNotFoundException, SQLException {
-		
+
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+username+"';");
-		
+
 		return res;
-	
+
 	}
-	
+
 	// Crea un usuario
 	public Response addUser(User user, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		try {
-			
+
 			// Verificamos que el Username no está vacó (Único obligatorio)
 			if (user.getUsername()!=null){
 				int res = sta.executeUpdate("INSERT INTO `RestBBDD`.`USERS` (`username`, `nombre`, `surname`)"
@@ -77,9 +97,9 @@ public class BBDD {
 			}else{
 				return Response.status(Response.Status.NOT_ACCEPTABLE).build();
 			}
-				
-			
-			
+
+
+
 		} catch (SQLException e) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
 		}
@@ -91,7 +111,7 @@ public class BBDD {
 
 	// Edita un usuario.
 	public ResultSet editUser (User user, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
-		
+
 		Connection con = UPMConnection();
 		try {
 			Statement sta = con.createStatement();
@@ -99,11 +119,33 @@ public class BBDD {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return null;
 	}
 
+	// Crea un post
+	public Response addPost(TipoPost post, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		try {
+
+			int res = sta.executeUpdate("INSERT INTO `RestBBDD`.`POSTS` (`id`, `username`, "
+					+ "`date_post`, `url`, `description`)"
+					+ " VALUES ('"+post.getId()+"', '"+post.getUsername()+"', '"+post.getDate_post()+"', "
+							+ "'"+post.getUrl()+"', '"+post.getDescription()+"');");
+
+		} catch (SQLException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+		}
+
+		String uri = uriInfo.getAbsolutePath().toString() + "post/" + post.getUsername();
+
+		return Response.status(Response.Status.CREATED).header("Location", uri).build();
 	
-	
+	}
+
+
+
 }
