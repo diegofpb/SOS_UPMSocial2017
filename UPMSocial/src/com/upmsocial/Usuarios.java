@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -66,9 +67,9 @@ public class Usuarios {
         .header("Location", uriInfo.getAbsolutePath().toString()).build();
     }
 	
-	 @POST
-	 @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	 public Response addUser(
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response addUser(
 	         @FormParam("username") String username,
 	         @FormParam("name") String name,
 	         @FormParam("surname") String surname) throws ClassNotFoundException, SQLException {
@@ -91,6 +92,23 @@ public class Usuarios {
 		BBDD bdconn = new BBDD();
 		
         return bdconn.editUser(myuser,uriInfo);
+    }
+	
+	@DELETE
+	@Path("{username}")
+	@Consumes(MediaType.APPLICATION_XML)
+    public Response deleteUser(JAXBElement<User> user) throws ClassNotFoundException, SQLException {
+		
+		System.out.print("Het2");
+		User myuser = user.getValue();	
+		
+		if(myuser.getUsername() != uriInfo.getPathParameters().get(1).toString()){
+			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+		}
+		
+		BBDD bdconn = new BBDD();
+		
+        return bdconn.deleteUser(myuser);
     }
 	
 	
