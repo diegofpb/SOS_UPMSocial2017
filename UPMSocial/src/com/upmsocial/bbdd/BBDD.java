@@ -84,14 +84,21 @@ public class BBDD {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
 		}
 
-		String uri = uriInfo.getAbsolutePath().toString() + "/usuarios/" + user.getUsername();
+		String uri = uriInfo.getAbsolutePath().toString() + "usuarios/" + user.getUsername();
 
 		return Response.status(Response.Status.CREATED).header("Location", uri).build();
 	}
 
-	
 	// Edita un usuario.
-	public ResultSet editUser (User usuario){
+	public ResultSet editUser (User user, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
+		
+		Connection con = UPMConnection();
+		try {
+			Statement sta = con.createStatement();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		return null;

@@ -7,14 +7,14 @@ public class User {
 
     private String name;
     private String surname;
-    private String username;
+	private String username;
 
     public String getName() {
         return name;
     }
 
-    public void setName(String nombre) {
-        this.name = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
    
 	public String getSurname() {
