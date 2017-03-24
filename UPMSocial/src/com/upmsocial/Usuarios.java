@@ -55,7 +55,7 @@ public class Usuarios {
 		User User = new User();
 		 
 		if (!res.next()) {        
-			return Response.status(Response.Status.BAD_REQUEST).build();
+			return Response.status(Response.Status.NOT_FOUND).build();
 		}else{
 			User.setName(res.getString(1));
 			User.setSurname(res.getString(2));
@@ -78,10 +78,16 @@ public class Usuarios {
 	 }
 	
 	@PUT
+	@Path("{username}")
 	@Consumes(MediaType.APPLICATION_XML)
     public Response putUser(JAXBElement<User> user) throws ClassNotFoundException, SQLException {
 		
-		User myuser = user.getValue();		
+		User myuser = user.getValue();	
+		
+		if(myuser.getUsername() != uriInfo.getPathParameters().get(1).toString()){
+			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+		}
+		
 		BBDD bdconn = new BBDD();
 		
         return bdconn.editUser(myuser,uriInfo);
