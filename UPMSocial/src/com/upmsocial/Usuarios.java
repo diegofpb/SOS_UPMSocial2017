@@ -78,21 +78,13 @@ public class Usuarios {
 	 }
 	
 	@PUT
-	@Path("{username}")
-    @Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_XML)
     public Response putUser(JAXBElement<User> user) throws ClassNotFoundException, SQLException {
 		
-		User myuser = user.getValue();
+		User myuser = user.getValue();		
+		BBDD bdconn = new BBDD();
 		
-		System.out.println(myuser.getName());
-		
-		
-		
-		/*BBDD bdconn = new BBDD();
-		ResultSet res = bdconn.editUser(user); */
-		
-        return Response.status(Response.Status.OK).build();
+        return bdconn.editUser(myuser,uriInfo);
     }
 	
 	
