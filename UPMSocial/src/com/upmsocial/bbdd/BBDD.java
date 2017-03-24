@@ -72,7 +72,7 @@ public class BBDD {
 			
 			// Verificamos que el Username no está vacó (Único obligatorio)
 			if (user.getUsername()!=null){
-				int res = sta.executeUpdate("INSERT INTO `RestBBDD`.`USERS` (`username`, `nombre`, `surname`)"
+				int res = sta.executeUpdate("INSERT INTO `RestBBDD`.`USERS` (`username`, `name`, `surname`)"
 						+ " VALUES ('"+user.getUsername()+"', '"+user.getName()+"', '"+user.getSurname()+"');");
 			}else{
 				return Response.status(Response.Status.NOT_ACCEPTABLE).build();
@@ -90,18 +90,49 @@ public class BBDD {
 	}
 
 	// Edita un usuario.
-	public ResultSet editUser (User user, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
+	public Response editUser (User user, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
 		
 		Connection con = UPMConnection();
-		try {
-			Statement sta = con.createStatement();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Statement sta = con.createStatement();
+		Statement sta2 = con.createStatement();
+
+		
+		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+user.getUsername()+"';");
+
+		if (!res.next()) {
+			// Si no existe, lo creamos y devolvemos 201 con location,
+			try {
+				int res2  = sta2.executeUpdate("INSERT INTO `RestBBDD`.`USERS` (`username`, `name`, `surname`)"
+						+ " VALUES ('"+user.getUsername()+"', '"+user.getName()+"', '"+user.getSurname()+"');");
+				
+			} catch (SQLException e) {
+				System.out.println("INSERT INTO `RestBBDD`.`USERS` (`username`, `name`, `surname`)"
+						+ " VALUES ('"+user.getUsername()+"', '"+user.getName()+"', '"+user.getSurname()+"');");
+				return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+			}
+
+			String uri = uriInfo.getAbsolutePath().toString() + "/" + user.getUsername();
+
+			return Response.status(Response.Status.CREATED).header("Location", uri).build();
+			
+			
+		}else{
+			
+			// Usuario existe. Modificamos datos y devolvemos 200 si OK.
+			try {
+				
+				int res2 = sta2.executeUpdate("UPDATE `RestBBDD`.`USERS` SET"
+						+ " `name`='"+user.getName()+"', `surname`='"+user.getSurname()+"' WHERE `username`='"+user.getUsername()+"';");
+				
+			} catch (SQLException e) {
+				return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+			}
+			
+							
 		}
 		
-		
-		return null;
+		return Response.status(Response.Status.OK).build();
+
 	}
 
 	
