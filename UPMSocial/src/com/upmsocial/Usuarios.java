@@ -68,14 +68,12 @@ public class Usuarios {
     }
 	
 	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addUser(
-	         @FormParam("username") String username,
-	         @FormParam("name") String name,
-	         @FormParam("surname") String surname) throws ClassNotFoundException, SQLException {
-	     User user = new User(name, surname, username);
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response addUser(JAXBElement<User> user) throws ClassNotFoundException, SQLException {
+		
+	     User myuser = user.getValue();
 	     BBDD con = new BBDD();
-	     return con.addUser(user,uriInfo);
+	     return con.addUser(myuser,uriInfo);
 	 }
 	
 	@PUT

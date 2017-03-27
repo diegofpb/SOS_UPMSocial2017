@@ -84,7 +84,7 @@ public class BBDD {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
 		}
 
-		String uri = uriInfo.getAbsolutePath().toString() + "usuarios/" + user.getUsername();
+		String uri = uriInfo.getAbsolutePath().toString() + "/" + user.getUsername();
 
 		return Response.status(Response.Status.CREATED).header("Location", uri).build();
 	}
