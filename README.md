@@ -1,14 +1,15 @@
 # SOS\_UPMSocial2017
 
-## Requisitos
+## Servicio
 
-1. Instalar Eclipse IDE for Java EE Developers.
-2. Instalar Glassfish4 (Full Platform) [https://glassfish.java.net/download.html]
+| URI        		| http://localhost:8080/UPMSocial/api/v1/usuarios/ | 
+| ------------- 	|-------------	| 
+| Método      	| GET 				| 
+| Devuelve      	| <ul><li>200 : OK y POX</li></ul>|
 
-## Configuración Glassfish4
 
-## Configuración MySQL Connector
-url: diegofpb.asuscomm.com:3306
-usuario: upmsocialapi
-pass: dieguito1
-schema: RestBBDD
+| URI        		| http://localhost:8080/UPMSocial/api/v1/usuarios/ | 
+| ------------- 	|-------------	| 
+| Método      	| POST 			|
+| Cuerpo 			| POX  			|  
+| Devuelve      	| <ul><li>200 : OK y POX</li><li>201 : Created y cabecera Location</li></ul>|  
