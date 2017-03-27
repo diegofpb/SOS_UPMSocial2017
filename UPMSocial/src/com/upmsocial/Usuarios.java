@@ -95,20 +95,12 @@ public class Usuarios {
     }
 	
 	@DELETE
-	@Path("{username}")
-	@Consumes(MediaType.APPLICATION_XML)
-    public Response deleteUser(JAXBElement<User> user) throws ClassNotFoundException, SQLException {
-		
-		System.out.print("Het2");
-		User myuser = user.getValue();	
-		
-		if(myuser.getUsername() != uriInfo.getPathParameters().get(1).toString()){
-			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
-		}
+	@Path("/{username}")
+    public Response deleteUser(@PathParam("username") String username) throws ClassNotFoundException, SQLException {
 		
 		BBDD bdconn = new BBDD();
 		
-        return bdconn.deleteUser(myuser);
+        return bdconn.deleteUser(username);
     }
 	
 	

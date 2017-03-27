@@ -136,15 +136,14 @@ public class BBDD {
 	}
 
 	// Borra un usuario.
-	public Response deleteUser (User user) throws ClassNotFoundException, SQLException{
+	public Response deleteUser (String username) throws ClassNotFoundException, SQLException{
 		
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		Statement sta2 = con.createStatement();
-
 		
-		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+user.getUsername()+"';");
-		System.out.println("Hey!");
+		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+username+"';");
+
 		
 		if (!res.next()) {
 			// Si no existe, devolvemos 404.
@@ -155,7 +154,7 @@ public class BBDD {
 			// Usuario existe. Borramos datos y devolvemos 200 si OK.
 			try {
 				
-				int res2 = sta2.executeUpdate("DELETE FROM `RestBBDD`.`USERS` WHERE `username`='"+user.getUsername()+"';");
+				int res2 = sta2.executeUpdate("DELETE FROM `RestBBDD`.`USERS` WHERE `username`='"+username+"';");
 				
 			} catch (SQLException e) {
 				return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
