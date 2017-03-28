@@ -232,18 +232,27 @@ public class BBDD {
 	}
 	
 	// Obtiene las relaciones de amistad en las que esta un usuario.
-	public ResultSet getFriends (String username) throws ClassNotFoundException, SQLException{
+	public ResultSet getFriends (String username, int start, int end, String nameFilter) throws ClassNotFoundException, SQLException{
 		
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		
 		List<Friendship> Friendships = new ArrayList<Friendship>();
 
-		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.FRIENDS WHERE"
-				+ " FRIENDS.id_user1 ='"+username+"' OR FRIENDS.id_user2 = '"+username+"';");
-
-		return res;
+		if (nameFilter != null){
 		
+			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.FRIENDS WHERE"
+					+ " (FRIENDS.id_user1 = '"+username+"' OR FRIENDS.id_user2 = '"+username+"') AND (id_user2 LIKE '%"+nameFilter+"%' or id_user1 LIKE '%"+nameFilter+"%')"
+					+ " LIMIT "+String.valueOf(end - start)+" OFFSET "+ String.valueOf(start) +";");
+			return res;
+
+		}else{
+			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.FRIENDS WHERE"
+					+ " (FRIENDS.id_user1 ='"+username+"' OR FRIENDS.id_user2 = '"+username+"')"
+							+ " LIMIT "+ String.valueOf(end - start) +" OFFSET "+ String.valueOf(start)+";");
+			return res;
+
+		}		
 	}
 
 
