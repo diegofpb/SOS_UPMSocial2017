@@ -29,28 +29,13 @@ public class BBDD {
 	}
 
 	// Devuelve todos los usuarios.
-	public List<User> getUsers() throws ClassNotFoundException, SQLException{
-
-		List<User> Usuarios = new ArrayList<User>();
+	public ResultSet getUsers() throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS");
 
-
-		while (res.next()) {
-
-			User Usuario = new User();
-
-			Usuario.setName(res.getString(1));
-			Usuario.setSurname(res.getString(2));
-			Usuario.setUsername(res.getString(3));
-
-			Usuarios.add(Usuario);
-
-		}
-
-		return Usuarios;
+		return res;
 	}
 
 	// Devuelve un usuario.
@@ -212,7 +197,7 @@ public class BBDD {
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		Statement sta2 = con.createStatement();
-		
+
 		ResultSet res = sta.executeQuery("SELECT FRIENDS.friend_id FROM RestBBDD.FRIENDS WHERE"
 				+ " FRIENDS.id_user1 ='"+user1+"' AND FRIENDS.id_user2 = '"+user2+"';");
 
@@ -230,17 +215,17 @@ public class BBDD {
 		}
 		return Response.status(Response.Status.OK).build();
 	}
-	
+
 	// Obtiene las relaciones de amistad en las que esta un usuario.
 	public ResultSet getFriends (String username, int start, int end, String nameFilter) throws ClassNotFoundException, SQLException{
-		
+
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
-		
+
 		List<Friendship> Friendships = new ArrayList<Friendship>();
 
 		if (nameFilter != null){
-		
+
 			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.FRIENDS WHERE"
 					+ " (FRIENDS.id_user1 = '"+username+"' OR FRIENDS.id_user2 = '"+username+"') AND (id_user2 LIKE '%"+nameFilter+"%' or id_user1 LIKE '%"+nameFilter+"%')"
 					+ " LIMIT "+String.valueOf(end - start)+" OFFSET "+ String.valueOf(start) +";");
@@ -249,7 +234,7 @@ public class BBDD {
 		}else{
 			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.FRIENDS WHERE"
 					+ " (FRIENDS.id_user1 ='"+username+"' OR FRIENDS.id_user2 = '"+username+"')"
-							+ " LIMIT "+ String.valueOf(end - start) +" OFFSET "+ String.valueOf(start)+";");
+					+ " LIMIT "+ String.valueOf(end - start) +" OFFSET "+ String.valueOf(start)+";");
 			return res;
 
 		}		
