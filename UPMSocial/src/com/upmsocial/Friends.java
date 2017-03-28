@@ -47,13 +47,12 @@ public class Friends {
 		ResultSet res = bdconn.getFriends(username); 
 		List<Friendship> Friendships = new ArrayList<Friendship>();
 		
-		Friendship Friendship = new Friendship();
-		
-		
 		if (!res.next()) {        
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}else{
 			while (res.next()){
+				
+				Friendship Friendship = new Friendship();
 				Friendship.setFriend_id(res.getInt(1));
 				Friendship.setId_user1(res.getString(2));
 				Friendship.setId_user2(res.getString(3));	
@@ -63,11 +62,23 @@ public class Friends {
 		
 		GenericEntity<List<Friendship>> entity = new GenericEntity<List<Friendship>>(Friendships) {};
 
-		
 	 	return Response.status(Response.Status.OK).entity(entity)
 		        .header("Location", uriInfo.getAbsolutePath().toString()).build();
     }
 	
+	@POST
+	@Path("/{username1}/{username2}")
+	public Response addFriend(@PathParam("username1") String username1, @PathParam("username2") String username2) throws ClassNotFoundException, SQLException{
+		BBDD bdconn = new BBDD();
+		return bdconn.createFriendship(username1,username2,uriInfo);
+	}
+	
+	@DELETE
+	@Path("/{username1}/{username2}")
+	public Response deleteFriend(@PathParam("username1") String username1, @PathParam("username2") String username2) throws ClassNotFoundException, SQLException{
+		BBDD bdconn = new BBDD();
+		return bdconn.deleteFriendship(username1,username2);
+	}
 
 	
 	

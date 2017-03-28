@@ -169,9 +169,7 @@ public class BBDD {
 	/* Funciones relacionadas con FRIENDSHIPS */
 
 	// Crea una relación de amistad
-	public Response createFriendship (User user1, User user2) throws ClassNotFoundException, SQLException{
-
-		// DELETE FROM `RestBBDD`.`FRIENDS` WHERE `friend_id`='5';
+	public Response createFriendship (String user1, String user2, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();
 		Statement sta1 = con.createStatement();
@@ -179,8 +177,8 @@ public class BBDD {
 		Statement sta3 = con.createStatement();
 		Statement sta4 = con.createStatement();
 
-		ResultSet res1 = sta1.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+user1.getUsername()+"';");
-		ResultSet res2 = sta2.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+user2.getUsername()+"';");
+		ResultSet res1 = sta1.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+user1+"';");
+		ResultSet res2 = sta2.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+user2+"';");
 
 
 		if (!res1.next() || !res2.next()) {
@@ -189,13 +187,13 @@ public class BBDD {
 		}else{
 
 			ResultSet res3 = sta3.executeQuery("SELECT FRIENDS.friend_id FROM RestBBDD.FRIENDS WHERE"
-					+ " (FRIENDS.id_user1 ='"+user1.getUsername()+"' AND FRIENDS.id_user2 = '"+user2.getUsername()+"')"
-					+ " OR FRIENDS.id_user1 ='"+user2.getUsername()+"' AND FRIENDS.id_user2 = '"+user1.getUsername()+"';");
+					+ " (FRIENDS.id_user1 ='"+user1+"' AND FRIENDS.id_user2 = '"+user2+"')"
+					+ " OR FRIENDS.id_user1 ='"+user2+"' AND FRIENDS.id_user2 = '"+user1+"';");
 
 			if (!res3.next()) {
 				// Si no encuentra la relacion de amistad, la creamos.
 				int res4 = sta4.executeUpdate("INSERT INTO `RestBBDD`.`FRIENDS` (`id_user1`, `id_user2`)"
-						+ " VALUES ('"+user1.getUsername()+"', '"+user1.getUsername()+"');");
+						+ " VALUES ('"+user1+"', '"+user2+"');");
 			}else{
 				return Response.status(Response.Status.FOUND).build();
 			}
@@ -203,15 +201,37 @@ public class BBDD {
 		}
 
 
-		return null;
+		String uri = uriInfo.getAbsolutePath().toString();
+		return Response.status(Response.Status.CREATED).header("Location", uri).build();
 	}
 
 	// Elimina una relación de amistad
-	public Response deleteFriendship (User user1, User user2) throws ClassNotFoundException, SQLException{
+	public Response deleteFriendship (String user1, String user2) throws ClassNotFoundException, SQLException{
 
-		return null;
+		// DELETE FROM `RestBBDD`.`FRIENDS` WHERE `friend_id`='5';
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		Statement sta2 = con.createStatement();
+		
+		ResultSet res = sta.executeQuery("SELECT FRIENDS.friend_id FROM RestBBDD.FRIENDS WHERE"
+				+ " FRIENDS.id_user1 ='"+user1+"' AND FRIENDS.id_user2 = '"+user2+"';");
+
+		if (!res.next()) {
+			// Si no existe, devolvemos 404 no existe dicha amistad.
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}else{
+			// Friendship existe. Borramos datos y devolvemos 200 si OK.
+			try {
+				int res2 = sta2.executeUpdate("DELETE FROM `RestBBDD`.`FRIENDS` WHERE `friend_id`='"+res.getString(1)+"';");
+			} catch (SQLException e) {
+				return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+			}
+
+		}
+		return Response.status(Response.Status.OK).build();
 	}
 	
+	// Obtiene las relaciones de amistad en las que esta un usuario.
 	public ResultSet getFriends (String username) throws ClassNotFoundException, SQLException{
 		
 		Connection con = UPMConnection();
