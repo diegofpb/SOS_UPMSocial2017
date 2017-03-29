@@ -1,7 +1,9 @@
 package com.upmsocial;
 
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -14,6 +16,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -21,6 +24,7 @@ import javax.xml.bind.JAXBElement;
 
 import com.upmsocial.bbdd.BBDD;
 import com.upmsocial.models.Post;
+import com.upmsocial.models.User;
 
 @Path("/posts")
 public class Posts {
@@ -41,21 +45,23 @@ public class Posts {
 	}
 	
 /*	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-	<tipoPosts>
-	    <tipo_post>
-	        <date_post/>
-	        <id>1</id>
-	        <url></url>
+	<Posts>
+	    <Post>
+	        <date_post>2017-03-26 14:08:17</date_post>
+	        <description>Prueba POST</description>
+	        <id>2</id>
+	        <url>http://www.youtube.com</url>
 	        <username>monty030</username>
-	    </tipo_post>
-	</tipoPosts>
+	    </Post>
+	</Posts>
 */
+	
 	@GET
 	@Path("/{username}")
 	@Produces(MediaType.APPLICATION_XML)
 
 	public Response getPost(@PathParam ("username") String username, 
-			@QueryParam("inicio") @DefaultValue("1") String i, 
+			@QueryParam("inicio") @DefaultValue("0") String i, 
 			@QueryParam("cuantos") @DefaultValue("10") String q
 			//@QueryParam("desde") @DefaultValue("null") Date d,
 			//@QueryParam("hasta") @DefaultValue("null") Date h
@@ -66,20 +72,40 @@ public class Posts {
 		int quant = Integer.parseInt(q);
 		//java.sql.Date sqlDateDesde = new java.sql.Date(d.getTime());
 		//java.sql.Date sqlDateHasta = new java.sql.Date(h.getTime());
-		List<Post> myposts = bdconn.getPost(username, inicio, quant, null, null);
+		ResultSet res = bdconn.getPost(username, inicio, quant, null, null);
+		Post Post = new Post();
+		List<Post> myPost = new ArrayList<Post>();
+		
+		while (res.next()) {
 				
-		return Response.status(Response.Status.OK).entity(myposts)
+				Post.setId(res.getInt(1));
+				Post.setUsername(res.getString(2));
+				Post.setDate_post(res.getDate(3));
+				Post.setUrl(res.getString(4));
+				Post.setDescription(res.getString(5));
+
+				myPost.add(Post);
+
+		}
+		
+		if (myPost.isEmpty()){
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+
+		GenericEntity<List<Post>> entity = new GenericEntity<List<Post>>(myPost) {};
+				
+		return Response.status(Response.Status.OK).entity(entity)
 				.header("Location", uriInfo.getAbsolutePath().toString()).build();
 	}
 	
-	@GET
+/*	@GET
 	@Path("/{username}")
 	public List<Post> getxml(@PathParam("username") String username) 
 			throws ClassNotFoundException, SQLException {
 		BBDD bdconn = new BBDD();
 		List<Post> xmlpost = bdconn.getXml(username);
 		return xmlpost;
-	}
+	}*/
 	
 	@GET
 	@Path("/{username}/cont")
