@@ -200,93 +200,37 @@ public class BBDD {
 	}
 
 	// Listar post de un usuario
-	public List<Post> getPost(String username, int inicio, int cuantos,
+	public ResultSet getPost(String username, int inicio, int cuantos,
 			Date desde, Date hasta) throws ClassNotFoundException, SQLException{
 
 		List<Post> Posts = new ArrayList<Post>();
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
-
+		ResultSet res;
 		Post Post = new Post();
+		int end = inicio+cuantos;
 
-		if(desde.equals(null) && hasta.equals(null)){
-			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POSTS.username "
-					+ "= '"+username+"'");
-			while (res.next()) {
+		if(desde == null && hasta == null){
+			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POSTS.username "
+					+ "= '"+username+"' LIMIT "+String.valueOf(end - inicio)+" OFFSET "+ String.valueOf(inicio) +";");
 
-				for(int i=inicio; i<inicio+cuantos; i++){
-
-					res.absolute(i);
-
-					Post.setId(res.getInt(1));
-					Post.setUsername(res.getString(2));
-					Post.setDate_post(res.getDate(3));
-					Post.setUrl(res.getString(4));
-					Post.setDescription(res.getString(5));
-
-					Posts.add(Post);
-				}
-			}
-		} else if(!desde.equals(null) && hasta.equals(null)){
-			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+		} else if(desde != null && hasta == null){
+			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
 					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+desde+"' "
-					+ "AND POSTS.date_post<= 'curdate()')");
-			while (res.next()) {
+					+ "AND POSTS.date_post<= 'curdate()') LIMIT "+String.valueOf(end - inicio)+" OFFSET "+ String.valueOf(inicio) +";");
 
-				for(int i=inicio; i<inicio+cuantos; i++){
-
-					res.absolute(i);
-
-					Post.setId(res.getInt(1));
-					Post.setUsername(res.getString(2));
-					Post.setDate_post(res.getDate(3));
-					Post.setUrl(res.getString(4));
-					Post.setDescription(res.getString(5));
-
-					Posts.add(Post);
-				}
-			}
-		} else if(!desde.equals(null) && !hasta.equals(null)){
-			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+		} else if(desde != null && hasta != null){
+			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
 					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+desde+"' "
-					+ "AND POSTS.date_post<= '"+hasta+"')");
-			while (res.next()) {
+					+ "AND POSTS.date_post<= '"+hasta+"') LIMIT "+String.valueOf(end - inicio)+" OFFSET "+ String.valueOf(inicio) +";");
 
-				for(int i=inicio; i<inicio+cuantos; i++){
-
-					res.absolute(i);
-
-					Post.setId(res.getInt(1));
-					Post.setUsername(res.getString(2));
-					Post.setDate_post(res.getDate(3));
-					Post.setUrl(res.getString(4));
-					Post.setDescription(res.getString(5));
-
-					Posts.add(Post);
-				}
-			}
 		}else{
-			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
-					+ "= '"+username+"'" + "AND POSTS.date_post<= '"+hasta+"')");
-			while (res.next()) {
-
-				for(int i=inicio; i<inicio+cuantos; i++){
-
-					res.absolute(i);
-
-					Post.setId(res.getInt(1));
-					Post.setUsername(res.getString(2));
-					Post.setDate_post(res.getDate(3));
-					Post.setUrl(res.getString(4));
-					Post.setDescription(res.getString(5));
-
-					Posts.add(Post);
-				}
-			}
+			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+					+ "= '"+username+"'" + "AND POSTS.date_post<= '"+hasta+"') LIMIT "+String.valueOf(end - inicio)+" OFFSET "+ String.valueOf(inicio) +";");
 		}
-
-		return Posts;
+		
+		return res;
 	}
 
 	// Borrar un post de un usuario
