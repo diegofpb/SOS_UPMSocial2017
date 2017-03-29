@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import com.upmsocial.models.TipoPost;
 import com.upmsocial.models.User;
 import com.upmsocial.models.Friendship;
 
@@ -26,6 +27,27 @@ public class BBDD {
 		String password = "dieguito1";
 
 		return DriverManager.getConnection(url, username, password);
+	}
+
+	// Función para primer id libre post
+	public int newIdPost() throws ClassNotFoundException, SQLException{
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS");
+
+		TipoPost Post = new TipoPost();
+
+		while (res.next()) {
+
+			Post.setId(res.getInt(1));
+		}
+
+		int i = Post.getId();
+
+		return i++;
+
+
 	}
 
 	// Devuelve todos los usuarios.
@@ -117,11 +139,173 @@ public class BBDD {
 
 		}
 
-		return Response.status(Response.Status.OK).build();
+
+		return null;
+	}
+
+	// Crea un post
+	public Response addPost(TipoPost post, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		try {
+
+			int res = sta.executeUpdate("INSERT INTO `RestBBDD`.`POSTS` (`id`, `username`, "
+					+ "`date_post`, `url`, `description`)"
+					+ " VALUES ('"+post.getId()+"', '"+post.getUsername()+"', '"+post.getDate_post()+"', "
+					+ "'"+post.getUrl()+"', '"+post.getDescription()+"');");
+
+		} catch (SQLException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+		}
+
+		String uri = uriInfo.getAbsolutePath().toString() + "post/" + post.getUsername();
+
+		return Response.status(Response.Status.CREATED).header("Location", uri).build();
 
 	}
 
-	// Borra un usuario.
+	// Listar post de un usuario
+	public List<TipoPost> getPost(String username, int inicio, int cuantos,
+			Date desde, Date hasta) throws ClassNotFoundException, SQLException{
+
+		List<TipoPost> Posts = new ArrayList<TipoPost>();
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+
+		TipoPost Post = new TipoPost();
+
+		if(desde.equals(null) && hasta.equals(null)){
+			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POSTS.username "
+					+ "= '"+username+"'");
+			while (res.next()) {
+
+				for(int i=inicio; i<inicio+cuantos; i++){
+
+					res.absolute(i);
+
+					Post.setId(res.getInt(1));
+					Post.setUsername(res.getString(2));
+					Post.setDate_post(res.getDate(3));
+					Post.setUrl(res.getString(4));
+					Post.setDescription(res.getString(5));
+
+					Posts.add(Post);
+				}
+			}
+		}
+		else if(!desde.equals(null) && hasta.equals(null)){
+			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+desde+"' "
+					+ "AND POSTS.date_post<= 'curdate()')");
+			while (res.next()) {
+
+				for(int i=inicio; i<inicio+cuantos; i++){
+
+					res.absolute(i);
+
+					Post.setId(res.getInt(1));
+					Post.setUsername(res.getString(2));
+					Post.setDate_post(res.getDate(3));
+					Post.setUrl(res.getString(4));
+					Post.setDescription(res.getString(5));
+
+					Posts.add(Post);
+				}
+			}
+		}
+		else if(!desde.equals(null) && !hasta.equals(null)){
+			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+desde+"' "
+					+ "AND POSTS.date_post<= '"+hasta+"')");
+			while (res.next()) {
+
+				for(int i=inicio; i<inicio+cuantos; i++){
+
+					res.absolute(i);
+
+					Post.setId(res.getInt(1));
+					Post.setUsername(res.getString(2));
+					Post.setDate_post(res.getDate(3));
+					Post.setUrl(res.getString(4));
+					Post.setDescription(res.getString(5));
+
+					Posts.add(Post);
+				}
+			}
+		}
+		else{
+			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+					+ "= '"+username+"'" + "AND POSTS.date_post<= '"+hasta+"')");
+			while (res.next()) {
+
+				for(int i=inicio; i<inicio+cuantos; i++){
+
+					res.absolute(i);
+
+					Post.setId(res.getInt(1));
+					Post.setUsername(res.getString(2));
+					Post.setDate_post(res.getDate(3));
+					Post.setUrl(res.getString(4));
+					Post.setDescription(res.getString(5));
+
+					Posts.add(Post);
+				}
+			}
+		}
+			
+		return Posts;
+	}
+	
+	// Borrar un post de un usuario
+	public Response deletePost(int id)throws ClassNotFoundException, SQLException {
+		
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		
+		try {
+			ResultSet comp = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POST.id="
+						+ "'"+id+"'");
+			if (comp.next()){
+				int res = sta.executeUpdate("DELETE FROM RestBBDD.POSTS WHERE POST.id="
+						+ "'"+id+"'");
+			}
+			else
+				return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+		} catch (SQLException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+		}
+		return Response.status(Response.Status.OK).build();
+	}
+	
+	// GET Xml
+	public List<TipoPost> getXml(String username) throws ClassNotFoundException, SQLException {
+		
+		List<TipoPost> Posts = new ArrayList<TipoPost>();
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POSTS.username= '"+username+"'");
+		//TipoPost Post = new TipoPost();
+		TipoPost Xmlpost = new TipoPost();
+
+		while (res.next()) {
+
+			Xmlpost.setId(res.getInt(1));
+			Xmlpost.setUsername(res.getString(2));
+			Xmlpost.setDate_post(res.getDate(3));
+			Xmlpost.setUrl(res.getString(4));
+			Xmlpost.setDescription(res.getString(5));
+
+			Posts.add(Xmlpost);
+
+		}
+		
+		return Posts;
+	}
+	
+}	// Borra un usuario.
 	public Response deleteUser (String username) throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();

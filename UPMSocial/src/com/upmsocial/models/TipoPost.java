@@ -1,7 +1,9 @@
 package com.upmsocial.models;
 
+import java.sql.Date;
+
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
+
 
 @XmlRootElement(name = "tipo_post")
 public class TipoPost {
