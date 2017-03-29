@@ -28,8 +28,8 @@ import com.upmsocial.models.Friendship;
 import com.upmsocial.models.User;
 
 
-@Path("/usuarios")
-public class Usuarios {
+@Path("/users")
+public class Users {
 
 	@Context
 	private UriInfo uriInfo;
