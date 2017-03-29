@@ -1,9 +1,7 @@
 package com.upmsocial;
 
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -22,23 +20,22 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBElement;
 
 import com.upmsocial.bbdd.BBDD;
-import com.upmsocial.models.TipoPost;
-import com.upmsocial.models.User;
+import com.upmsocial.models.Post;
 
 @Path("/posts")
-public class Post {
+public class Posts {
 
 	@Context
 	private UriInfo uriInfo;
 
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response addPost(JAXBElement<TipoPost> post) throws ClassNotFoundException, SQLException {
+	public Response addPost(JAXBElement<Post> post) throws ClassNotFoundException, SQLException {
 
 		BBDD con = new BBDD();
 		int id = con.newIdPost();
 
-		TipoPost mypost = post.getValue();
+		Post mypost = post.getValue();
 
 		return con.addPost(mypost,uriInfo);
 	}
@@ -69,7 +66,7 @@ public class Post {
 		int quant = Integer.parseInt(q);
 		//java.sql.Date sqlDateDesde = new java.sql.Date(d.getTime());
 		//java.sql.Date sqlDateHasta = new java.sql.Date(h.getTime());
-		List<TipoPost> myposts = bdconn.getPost(username, inicio, quant, null, null);
+		List<Post> myposts = bdconn.getPost(username, inicio, quant, null, null);
 				
 		return Response.status(Response.Status.OK).entity(myposts)
 				.header("Location", uriInfo.getAbsolutePath().toString()).build();
@@ -77,10 +74,10 @@ public class Post {
 	
 	@GET
 	@Path("/{username}")
-	public List<TipoPost> getxml(@PathParam("username") String username) 
+	public List<Post> getxml(@PathParam("username") String username) 
 			throws ClassNotFoundException, SQLException {
 		BBDD bdconn = new BBDD();
-		List<TipoPost> xmlpost = bdconn.getXml(username);
+		List<Post> xmlpost = bdconn.getXml(username);
 		return xmlpost;
 	}
 	

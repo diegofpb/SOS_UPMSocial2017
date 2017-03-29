@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 
 @XmlRootElement(name = "tipo_post")
-public class TipoPost {
+public class Post {
 	private int id;
 	private String username;
 	private Date date_post;
@@ -44,11 +44,11 @@ public class TipoPost {
 		this.description = description;
 	}
 	
-	public TipoPost() {
+	public Post() {
 
     }
 
-    public TipoPost(int id, String username, Date date_post, String url, String description) {
+    public Post(int id, String username, Date date_post, String url, String description) {
         super();
         this.id = id;
         this.username = username;

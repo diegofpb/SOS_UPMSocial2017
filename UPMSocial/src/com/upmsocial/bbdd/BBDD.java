@@ -7,7 +7,7 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import com.upmsocial.models.TipoPost;
+import com.upmsocial.models.Post;
 import com.upmsocial.models.User;
 import com.upmsocial.models.Friendship;
 
@@ -163,7 +163,7 @@ public class BBDD {
 		Statement sta = con.createStatement();
 		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS");
 
-		TipoPost Post = new TipoPost();
+		Post Post = new Post();
 
 		while (res.next()) {
 
@@ -178,7 +178,7 @@ public class BBDD {
 	}
 
 	// Crea un post
-	public Response addPost(TipoPost post, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
+	public Response addPost(Post post, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
@@ -200,15 +200,15 @@ public class BBDD {
 	}
 
 	// Listar post de un usuario
-	public List<TipoPost> getPost(String username, int inicio, int cuantos,
+	public List<Post> getPost(String username, int inicio, int cuantos,
 			Date desde, Date hasta) throws ClassNotFoundException, SQLException{
 
-		List<TipoPost> Posts = new ArrayList<TipoPost>();
+		List<Post> Posts = new ArrayList<Post>();
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 
-		TipoPost Post = new TipoPost();
+		Post Post = new Post();
 
 		if(desde.equals(null) && hasta.equals(null)){
 			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POSTS.username "
@@ -311,15 +311,15 @@ public class BBDD {
 	}
 
 	// GET Xml
-	public List<TipoPost> getXml(String username) throws ClassNotFoundException, SQLException {
+	public List<Post> getXml(String username) throws ClassNotFoundException, SQLException {
 
-		List<TipoPost> Posts = new ArrayList<TipoPost>();
+		List<Post> Posts = new ArrayList<Post>();
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POSTS.username= '"+username+"'");
 		//TipoPost Post = new TipoPost();
-		TipoPost Xmlpost = new TipoPost();
+		Post Xmlpost = new Post();
 
 		while (res.next()) {
 
