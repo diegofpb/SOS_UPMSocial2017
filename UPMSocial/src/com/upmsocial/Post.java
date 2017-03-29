@@ -42,8 +42,18 @@ public class Post {
 
 		return con.addPost(mypost,uriInfo);
 	}
-
-/*	@GET
+	
+/*	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	<tipoPosts>
+	    <tipo_post>
+	        <date_post/>
+	        <id>1</id>
+	        <url></url>
+	        <username>monty030</username>
+	    </tipo_post>
+	</tipoPosts>
+*/
+	@GET
 	@Path("/{username}")
 	@Produces(MediaType.APPLICATION_XML)
 
@@ -63,10 +73,10 @@ public class Post {
 				
 		return Response.status(Response.Status.OK).entity(myposts)
 				.header("Location", uriInfo.getAbsolutePath().toString()).build();
-	}*/
+	}
 	
 	@GET
-	@Path("{/username}")
+	@Path("/{username}")
 	public List<TipoPost> getxml(@PathParam("username") String username) 
 			throws ClassNotFoundException, SQLException {
 		BBDD bdconn = new BBDD();
@@ -74,17 +84,17 @@ public class Post {
 		return xmlpost;
 	}
 	
-/*	@GET
-	@Path("{/username}/cont")
+	@GET
+	@Path("/{username}/cont")
 	public int contPost(@PathParam("username") String username
 						//@QueryParam("desde") @DefaultValue("null") Date d,
 						//@QueryParam("hasta") @DefaultValue("null") Date h
 						) throws ClassNotFoundException, SQLException {
 		return 0;
-	}*/
+	}
 	
 	@DELETE
-	@Path("{/username}")
+	@Path("/{username}")
 	public Response deletePost(@PathParam("username") String username,
 			@PathParam("id") int id) throws ClassNotFoundException, SQLException {
 		
