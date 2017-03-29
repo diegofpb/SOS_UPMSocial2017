@@ -29,26 +29,7 @@ public class BBDD {
 		return DriverManager.getConnection(url, username, password);
 	}
 
-	// Función para primer id libre post
-	public int newIdPost() throws ClassNotFoundException, SQLException{
-
-		Connection con = UPMConnection();
-		Statement sta = con.createStatement();
-		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS");
-
-		TipoPost Post = new TipoPost();
-
-		while (res.next()) {
-
-			Post.setId(res.getInt(1));
-		}
-
-		int i = Post.getId();
-
-		return i++;
-
-
-	}
+	/* FUNCIONES DE USUARIOS */
 
 	// Devuelve todos los usuarios.
 	public ResultSet getUsers() throws ClassNotFoundException, SQLException{
@@ -140,7 +121,60 @@ public class BBDD {
 		}
 
 
-		return null;
+		return Response.status(Response.Status.OK).build();
+	}
+
+	// Borra un usuario.
+	public Response deleteUser (String username) throws ClassNotFoundException, SQLException{
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		Statement sta2 = con.createStatement();
+
+		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+username+"';");
+
+
+		if (!res.next()) {
+			// Si no existe, devolvemos 404.
+			return Response.status(Response.Status.NOT_FOUND).build();
+
+		}else{
+
+			// Usuario existe. Borramos datos y devolvemos 200 si OK.
+			try {
+
+				int res2 = sta2.executeUpdate("DELETE FROM `RestBBDD`.`USERS` WHERE `username`='"+username+"';");
+
+			} catch (SQLException e) {
+				return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+			}
+
+		}
+
+		return Response.status(Response.Status.OK).build();
+	}
+
+	/* FUNCIONES DE POSTS */
+
+	// Función para primer id libre post
+	public int newIdPost() throws ClassNotFoundException, SQLException{
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS");
+
+		TipoPost Post = new TipoPost();
+
+		while (res.next()) {
+
+			Post.setId(res.getInt(1));
+		}
+
+		int i = Post.getId();
+
+		return i++;
+
+
 	}
 
 	// Crea un post
@@ -194,8 +228,7 @@ public class BBDD {
 					Posts.add(Post);
 				}
 			}
-		}
-		else if(!desde.equals(null) && hasta.equals(null)){
+		} else if(!desde.equals(null) && hasta.equals(null)){
 			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
 					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+desde+"' "
 					+ "AND POSTS.date_post<= 'curdate()')");
@@ -214,8 +247,7 @@ public class BBDD {
 					Posts.add(Post);
 				}
 			}
-		}
-		else if(!desde.equals(null) && !hasta.equals(null)){
+		} else if(!desde.equals(null) && !hasta.equals(null)){
 			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
 					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+desde+"' "
 					+ "AND POSTS.date_post<= '"+hasta+"')");
@@ -234,8 +266,7 @@ public class BBDD {
 					Posts.add(Post);
 				}
 			}
-		}
-		else{
+		}else{
 			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
 					+ "= '"+username+"'" + "AND POSTS.date_post<= '"+hasta+"')");
 			while (res.next()) {
@@ -254,19 +285,19 @@ public class BBDD {
 				}
 			}
 		}
-			
+
 		return Posts;
 	}
-	
+
 	// Borrar un post de un usuario
 	public Response deletePost(int id)throws ClassNotFoundException, SQLException {
-		
+
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
-		
+
 		try {
 			ResultSet comp = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POST.id="
-						+ "'"+id+"'");
+					+ "'"+id+"'");
 			if (comp.next()){
 				int res = sta.executeUpdate("DELETE FROM RestBBDD.POSTS WHERE POST.id="
 						+ "'"+id+"'");
@@ -278,10 +309,10 @@ public class BBDD {
 		}
 		return Response.status(Response.Status.OK).build();
 	}
-	
+
 	// GET Xml
 	public List<TipoPost> getXml(String username) throws ClassNotFoundException, SQLException {
-		
+
 		List<TipoPost> Posts = new ArrayList<TipoPost>();
 
 		Connection con = UPMConnection();
@@ -301,41 +332,11 @@ public class BBDD {
 			Posts.add(Xmlpost);
 
 		}
-		
+
 		return Posts;
 	}
-	
-}	// Borra un usuario.
-	public Response deleteUser (String username) throws ClassNotFoundException, SQLException{
 
-		Connection con = UPMConnection();
-		Statement sta = con.createStatement();
-		Statement sta2 = con.createStatement();
-
-		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+username+"';");
-
-
-		if (!res.next()) {
-			// Si no existe, devolvemos 404.
-			return Response.status(Response.Status.NOT_FOUND).build();
-
-		}else{
-
-			// Usuario existe. Borramos datos y devolvemos 200 si OK.
-			try {
-
-				int res2 = sta2.executeUpdate("DELETE FROM `RestBBDD`.`USERS` WHERE `username`='"+username+"';");
-
-			} catch (SQLException e) {
-				return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
-			}
-
-		}
-
-		return Response.status(Response.Status.OK).build();
-	}
-
-	/* Funciones relacionadas con FRIENDSHIPS */
+	/* FUNCIONES DE FRIENDSHIPS */
 
 	// Crea una relación de amistad
 	public Response createFriendship (String user1, String user2, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
@@ -423,6 +424,5 @@ public class BBDD {
 
 		}		
 	}
-
 
 }
