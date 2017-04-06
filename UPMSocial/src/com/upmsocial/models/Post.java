@@ -1,15 +1,16 @@
 package com.upmsocial.models;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-@XmlRootElement(name = "tipo_post")
+@XmlRootElement(name = "posts")
 public class Post {
 	private int id;
 	private String username;
-	private Date date_post;
+	private String date_post;
 	private String url;
 	private String description;
 
@@ -25,11 +26,11 @@ public class Post {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public Date getDate_post() {
+	public String getDate_post() {
 		return date_post;
 	}
-	public void setDate_post(Date date_post) {
-		this.date_post = date_post;
+	public void setDate_post(String string) {
+		this.date_post = string;
 	}
 	public String getUrl() {
 		return url;
@@ -48,7 +49,7 @@ public class Post {
 
     }
 
-    public Post(int id, String username, Date date_post, String url, String description) {
+    public Post(int id, String username, String date_post, String url, String description) {
         super();
         this.id = id;
         this.username = username;

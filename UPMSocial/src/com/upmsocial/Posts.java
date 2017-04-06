@@ -1,8 +1,11 @@
 package com.upmsocial;
 
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,16 +78,19 @@ public class Posts {
 		ResultSet res = bdconn.getPost(username, inicio, quant, null, null);
 		Post Post = new Post();
 		List<Post> myPost = new ArrayList<Post>();
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		while (res.next()) {
 				
 				Post.setId(res.getInt(1));
 				Post.setUsername(res.getString(2));
-				Post.setDate_post(res.getDate(3));
+				Post.setDate_post(sdf.format(res.getTimestamp(3)));
 				Post.setUrl(res.getString(4));
 				Post.setDescription(res.getString(5));
 
 				myPost.add(Post);
+				
+				System.out.println(Post.getDate_post());
 
 		}
 		

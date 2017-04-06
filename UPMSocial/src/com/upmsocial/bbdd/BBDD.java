@@ -269,7 +269,7 @@ public class BBDD {
 
 			Xmlpost.setId(res.getInt(1));
 			Xmlpost.setUsername(res.getString(2));
-			Xmlpost.setDate_post(res.getDate(3));
+			Xmlpost.setDate_post(res.getString(3));
 			Xmlpost.setUrl(res.getString(4));
 			Xmlpost.setDescription(res.getString(5));
 
