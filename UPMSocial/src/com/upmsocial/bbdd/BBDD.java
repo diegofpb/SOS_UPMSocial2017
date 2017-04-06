@@ -201,7 +201,7 @@ public class BBDD {
 
 	// Listar post de un usuario
 	public ResultSet getPost(String username, int inicio, int cuantos,
-			Date desde, Date hasta) throws ClassNotFoundException, SQLException{
+			Timestamp desde, Timestamp hasta) throws ClassNotFoundException, SQLException{
 
 		List<Post> Posts = new ArrayList<Post>();
 
