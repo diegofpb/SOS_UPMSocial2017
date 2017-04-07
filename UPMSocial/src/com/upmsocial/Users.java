@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.POST;
@@ -24,7 +23,6 @@ import javax.xml.bind.JAXBElement;
 
 
 import com.upmsocial.bbdd.BBDD;
-import com.upmsocial.models.Friendship;
 import com.upmsocial.models.User;
 
 
@@ -120,7 +118,7 @@ public class Users {
 	public Response deleteUser(@PathParam("username") String username) throws ClassNotFoundException, SQLException {
 
 		BBDD bdconn = new BBDD();
-
+		// TODO: Esta funcion deberia borrar el perfil, sus amistades y sus posts.
 		return bdconn.deleteUser(username);
 	}
 

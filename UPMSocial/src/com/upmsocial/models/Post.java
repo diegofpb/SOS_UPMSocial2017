@@ -1,12 +1,10 @@
 package com.upmsocial.models;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-@XmlRootElement(name = "posts")
+@XmlRootElement(name = "post")
 public class Post {
 	private int id;
 	private String username;
@@ -14,6 +12,7 @@ public class Post {
 	private String url;
 	private String description;
 
+	@XmlAttribute
 	public int getId() {
 		return id;
 	}

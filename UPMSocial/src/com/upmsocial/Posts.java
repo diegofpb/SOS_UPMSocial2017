@@ -1,11 +1,9 @@
 package com.upmsocial;
 
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,79 +25,56 @@ import javax.xml.bind.JAXBElement;
 
 import com.upmsocial.bbdd.BBDD;
 import com.upmsocial.models.Post;
-import com.upmsocial.models.User;
 
-@Path("/posts")
+@Path("/users/{user_id}/posts")
 public class Posts {
 
 	@Context
 	private UriInfo uriInfo;
 
-	@POST
-	@Consumes(MediaType.APPLICATION_XML)
-	public Response addPost(JAXBElement<Post> post) throws ClassNotFoundException, SQLException {
-
-		BBDD con = new BBDD();
-		int id = con.newIdPost();
-
-		Post mypost = post.getValue();
-
-		return con.addPost(mypost,uriInfo);
-	}
-
-	/*	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-	<Posts>
-	    <Post>
-	        <date_post>2017-03-26 14:08:17</date_post>
-	        <description>Prueba POST</description>
-	        <id>2</id>
-	        <url>http://www.youtube.com</url>
-	        <username>monty030</username>
-	    </Post>
-	</Posts>
-	 */
-
 	@GET
-	@Path("/{username}")
 	@Produces(MediaType.APPLICATION_XML)
 
-	public Response getPost(@PathParam ("username") String username, 
-			@QueryParam("inicio") @DefaultValue("0") String i, 
-			@QueryParam("cuantos") @DefaultValue("10") String q,
-			@QueryParam("desde") String d,
-			@QueryParam("hasta") String h
+	public Response getPost(@PathParam ("user_id") String username, 
+			@QueryParam("start") @DefaultValue("1") String i, 
+			@QueryParam("end") @DefaultValue("10") String q,
+			@QueryParam("from") String d,
+			@QueryParam("to") String h
 			) throws ClassNotFoundException, SQLException {
 
 		BBDD bdconn = new BBDD();
-		int inicio = Integer.parseInt(i);
-		int quant = Integer.parseInt(q);
+		int start = Integer.parseInt(i);
+		int end = Integer.parseInt(q);
 		ResultSet res;
 		
 		if (d != null && h!=null){
-			Timestamp desde = Timestamp.valueOf(d);
-			Timestamp hasta = Timestamp.valueOf(h);
-			res = bdconn.getPost(username, inicio, quant, desde, hasta);
+			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
+			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
+			res = bdconn.getPosts(username, start, end, from, to);
 
 		}else if(d != null && h==null){
-			Timestamp desde = Timestamp.valueOf(d);
-			Timestamp hasta = new Timestamp(System.currentTimeMillis());
-			res = bdconn.getPost(username, inicio, quant, desde, hasta);
+			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
+			Timestamp to = new Timestamp(System.currentTimeMillis());
+			res = bdconn.getPosts(username, start, end, from, to);
+			
 		}else if(d == null && h !=null){
-			Timestamp desde = new Timestamp(0);
-			Timestamp hasta = Timestamp.valueOf(h);
-			res = bdconn.getPost(username, inicio, quant, desde, hasta);
-		}
-		else{
-			Timestamp desde = new Timestamp(0);
-			Timestamp hasta = new Timestamp(System.currentTimeMillis());
-			res = bdconn.getPost(username, inicio, quant, desde, hasta);
+			Timestamp from = new Timestamp(0);
+			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
+			res = bdconn.getPosts(username, start, end, from, to);
+			
+		}else{
+			Timestamp from = new Timestamp(0);
+			Timestamp to = new Timestamp(System.currentTimeMillis());
+			res = bdconn.getPosts(username, start, end, from, to);
+			
 		}
 
-		Post Post = new Post();
 		List<Post> myPost = new ArrayList<Post>();
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
 
 		while (res.next()) {
+			
+			Post Post = new Post();
 
 			Post.setId(res.getInt(1));
 			Post.setUsername(res.getString(2));
@@ -108,8 +83,6 @@ public class Posts {
 			Post.setDescription(res.getString(5));
 
 			myPost.add(Post);
-
-			System.out.println(Post.getDate_post());
 
 		}
 
@@ -123,31 +96,70 @@ public class Posts {
 				.header("Location", uriInfo.getAbsolutePath().toString()).build();
 	}
 
-	/*	@GET
-	@Path("/{username}")
-	public List<Post> getxml(@PathParam("username") String username) 
-			throws ClassNotFoundException, SQLException {
-		BBDD bdconn = new BBDD();
-		List<Post> xmlpost = bdconn.getXml(username);
-		return xmlpost;
-	}*/
-
 	@GET
-	@Path("/{username}/cont")
-	public int contPost(@PathParam("username") String username
-			//@QueryParam("desde") @DefaultValue("null") Date d,
-			//@QueryParam("hasta") @DefaultValue("null") Date h
+	@Path("/count")
+	public Response countPost(@PathParam ("user_id") String username, 
+			@QueryParam("start") @DefaultValue("1") String i, 
+			@QueryParam("end") @DefaultValue("10") String q,
+			@QueryParam("from") String d,
+			@QueryParam("to") String h
 			) throws ClassNotFoundException, SQLException {
-		return 0;
+
+		BBDD bdconn = new BBDD();
+		int start = Integer.parseInt(i);
+		int end = Integer.parseInt(q);
+		ResultSet res;
+		
+		if (d != null && h!=null){
+			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
+			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
+			res = bdconn.countPosts(username, start, end, from, to);
+
+		}else if(d != null && h==null){
+			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
+			Timestamp to = new Timestamp(System.currentTimeMillis());
+			res = bdconn.countPosts(username, start, end, from, to);
+			
+		}else if(d == null && h !=null){
+			Timestamp from = new Timestamp(0);
+			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
+			res = bdconn.countPosts(username, start, end, from, to);
+			
+		}else{
+			Timestamp from = new Timestamp(0);
+			Timestamp to = new Timestamp(System.currentTimeMillis());
+			res = bdconn.countPosts(username, start, end, from, to);
+			
+		}
+
+		if (!res.next()) {        
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}else{
+			return Response.status(Response.Status.OK).entity(res.getString(1))
+					.header("Location", uriInfo.getAbsolutePath().toString()).build();				
+		}
+
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response addPost(JAXBElement<Post> post) throws ClassNotFoundException, SQLException {
+
+		BBDD con = new BBDD();
+		//int id = con.newIdPost();		¿No lo estas usando?
+
+		Post mypost = post.getValue();
+
+		return con.addPost(mypost,uriInfo);
 	}
 
 	@DELETE
-	@Path("/{username}")
-	public Response deletePost(@PathParam("username") String username,
-			@PathParam("id") int id) throws ClassNotFoundException, SQLException {
-
-		BBDD bdconn = new BBDD();
-		return bdconn.deletePost(id);
+	@Path("/{post_id}")
+	public Response deletePost(@PathParam("user_id") String username,
+			@PathParam("post_id") int id) throws ClassNotFoundException, SQLException {
+					
+			BBDD bdconn = new BBDD();
+			return bdconn.deletePost(username,id);
 	}
 
 

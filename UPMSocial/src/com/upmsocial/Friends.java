@@ -23,7 +23,7 @@ import com.upmsocial.bbdd.BBDD;
 import com.upmsocial.models.Friendship;
 
 
-@Path("/friends")
+@Path("/users/{user_id}/friends")
 public class Friends {
 	
 	@Context
@@ -33,10 +33,9 @@ public class Friends {
     Request request;
 	
 	@GET
-	@Path("/{username}")
     @Produces(MediaType.APPLICATION_XML)
-    public Response getFriends(@PathParam("username") String username,
-    		@QueryParam("start") @DefaultValue("0") int start,
+    public Response getFriends(@PathParam("user_id") String username,
+    		@QueryParam("start") @DefaultValue("1") int start,
 			@QueryParam("end") @DefaultValue("10") int end,
 			@QueryParam("filter_by_name") String nameFilter) throws ClassNotFoundException, SQLException {
 	
@@ -48,7 +47,7 @@ public class Friends {
 		while (res.next()){	
 			Friendship Friendship = new Friendship();
 			
-			Friendship.setFriend_id(res.getInt(1));
+			Friendship.setFriendship_id(res.getInt(1));
 			Friendship.setId_user1(res.getString(2));
 			Friendship.setId_user2(res.getString(3));	
 			Friendships.add(Friendship);
@@ -65,16 +64,17 @@ public class Friends {
     }
 	
 	@POST
-	@Path("/{username1}/{username2}")
-	public Response addFriend(@PathParam("username1") String username1, @PathParam("username2") String username2) throws ClassNotFoundException, SQLException{
+	@Path("/{username2}")
+	public Response addFriend(@PathParam("user_id") String username1, @PathParam("username2") String username2) throws ClassNotFoundException, SQLException{
 		BBDD bdconn = new BBDD();
 		return bdconn.createFriendship(username1,username2,uriInfo);
 	}
 	
 	@DELETE
-	@Path("/{username1}/{username2}")
-	public Response deleteFriend(@PathParam("username1") String username1, @PathParam("username2") String username2) throws ClassNotFoundException, SQLException{
+	@Path("/{username2}")
+	public Response deleteFriend(@PathParam("user_id") String username1, @PathParam("username2") String username2) throws ClassNotFoundException, SQLException{
 		BBDD bdconn = new BBDD();
+		// TODO: [ISSUE] No borra si la relación la ha creado tu amigo. Arreglar desde BBDD.
 		return bdconn.deleteFriendship(username1,username2);
 	}
 

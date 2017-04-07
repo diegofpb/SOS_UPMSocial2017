@@ -29,7 +29,12 @@ public class BBDD {
 		return DriverManager.getConnection(url, username, password);
 	}
 
+	
+	////////////////////////////
 	/* FUNCIONES DE USUARIOS */
+	///////////////////////////
+
+	
 
 	// Devuelve todos los usuarios.
 	public ResultSet getUsers() throws ClassNotFoundException, SQLException{
@@ -59,7 +64,7 @@ public class BBDD {
 		Statement sta = con.createStatement();
 		try {
 
-			// Verificamos que el Username no está vacó (Único obligatorio)
+			// Verificamos que el Username no está vació (Único obligatorio)
 			if (user.getUsername()!=null){
 				int res = sta.executeUpdate("INSERT INTO `RestBBDD`.`USERS` (`username`, `name`, `surname`)"
 						+ " VALUES ('"+user.getUsername()+"', '"+user.getName()+"', '"+user.getSurname()+"');");
@@ -130,6 +135,9 @@ public class BBDD {
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		Statement sta2 = con.createStatement();
+		ResultSet posts;
+		ResultSet friends;
+		
 
 		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS WHERE USERS.username = '"+username+"';");
 
@@ -140,11 +148,28 @@ public class BBDD {
 
 		}else{
 
-			// Usuario existe. Borramos datos y devolvemos 200 si OK.
+			// Usuario existe. Borramos posts, friendships y devolvemos 200 si OK.
 			try {
 
+				// Borramos posts.
+				posts = getPosts(username, 1, 1000, null, null);
+				
+				while (posts.next()) {
+					System.out.println("Borrando post con id " + posts.getString(1));
+					Response postDelete = deletePost(username, Integer.parseInt(posts.getString(1)));
+				}		
+				
+				// Borramos friendships.
+				friends = getFriends(username, 1, 1000, null);
+				while (friends.next()) {
+					System.out.println("Borrando amistad con id " + friends.getString(1));
+					Response friendDelete = deleteFriendship(friends.getString(2),friends.getString(3));
+				}
+				
+				// Finalmente borramos usuario.
 				int res2 = sta2.executeUpdate("DELETE FROM `RestBBDD`.`USERS` WHERE `username`='"+username+"';");
-
+				
+				
 			} catch (SQLException e) {
 				return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
 			}
@@ -154,8 +179,12 @@ public class BBDD {
 		return Response.status(Response.Status.OK).build();
 	}
 
+	
+	////////////////////////
 	/* FUNCIONES DE POSTS */
-
+	////////////////////////
+	
+	
 	// Función para primer id libre post
 	public int newIdPost() throws ClassNotFoundException, SQLException{
 
@@ -182,69 +211,113 @@ public class BBDD {
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
+		ResultSet res2;
+		String uri;
+		
 		try {
 
-			int res = sta.executeUpdate("INSERT INTO `RestBBDD`.`POSTS` (`id`, `username`, "
+			int res = sta.executeUpdate("INSERT INTO `RestBBDD`.`POSTS` (`username`, "
 					+ "`date_post`, `url`, `description`)"
-					+ " VALUES ('"+post.getId()+"', '"+post.getUsername()+"', '"+post.getDate_post()+"', "
+					+ " VALUES ('"+post.getUsername()+"', '"+post.getDate_post()+"', "
 					+ "'"+post.getUrl()+"', '"+post.getDescription()+"');");
 
 		} catch (SQLException e) {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
 		}
+		
+		try {
 
-		String uri = uriInfo.getAbsolutePath().toString() + "post/" + post.getUsername();
+			res2 = sta.executeQuery("SELECT LAST_INSERT_ID();");
+
+		} catch (SQLException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+		}
+		
+		
+		if (!res2.next()) {        
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}else{
+			uri = uriInfo.getAbsolutePath().toString() + "/" + res2.getString(1);			
+		}
+		
 
 		return Response.status(Response.Status.CREATED).header("Location", uri).build();
 
 	}
 
-	// Listar post de un usuario
-	public ResultSet getPost(String username, int inicio, int cuantos,
-			Timestamp desde, Timestamp hasta) throws ClassNotFoundException, SQLException{
-
-		List<Post> Posts = new ArrayList<Post>();
+	// Listar posts de un usuario
+	public ResultSet getPosts(String username, int start, int end,
+			Timestamp from, Timestamp to) throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		ResultSet res;
-		Post Post = new Post();
-		int end = inicio+cuantos;
 
-		if(desde == null && hasta == null){
+		if(from == null && to == null){
 			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POSTS.username "
-					+ "= '"+username+"' LIMIT "+String.valueOf(end - inicio)+" OFFSET "+ String.valueOf(inicio) +";");
+					+ "= '"+username+"' LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
 
-		} else if(desde != null && hasta == null){
+		} else if(from != null && to == null){
 			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
-					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+desde+"' "
-					+ "AND POSTS.date_post<= 'curdate()') LIMIT "+String.valueOf(end - inicio)+" OFFSET "+ String.valueOf(inicio) +";");
+					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
+					+ "AND POSTS.date_post<= 'curdate()') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
 
-		} else if(desde != null && hasta != null){
+		} else if(from != null && to != null){
 			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
-					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+desde+"' "
-					+ "AND POSTS.date_post<= '"+hasta+"') LIMIT "+String.valueOf(end - inicio)+" OFFSET "+ String.valueOf(inicio) +";");
+					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
+					+ "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
 
 		}else{
 			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
-					+ "= '"+username+"'" + "AND POSTS.date_post<= '"+hasta+"') LIMIT "+String.valueOf(end - inicio)+" OFFSET "+ String.valueOf(inicio) +";");
+					+ "= '"+username+"'" + "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+		}
+		
+		return res;
+	}
+
+	// Contar posts de un usuario
+	public ResultSet countPosts(String username, int start, int end,
+		Timestamp from, Timestamp to) throws ClassNotFoundException, SQLException{
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		ResultSet res;
+
+		if(from == null && to == null){
+			res = sta.executeQuery("SELECT COUNT(*) FROM RestBBDD.POSTS WHERE POSTS.username "
+					+ "= '"+username+"' LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+
+		} else if(from != null && to == null){
+			res = sta.executeQuery("SELECT COUNT(*) FROM RestBBDD.POSTS WHERE (POSTS.username "
+					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
+					+ "AND POSTS.date_post<= 'curdate()') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+
+		} else if(from != null && to != null){
+			res = sta.executeQuery("SELECT COUNT(*) FROM RestBBDD.POSTS WHERE (POSTS.username "
+					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
+					+ "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+
+		}else{
+			res = sta.executeQuery("SELECT COUNT(*) FROM RestBBDD.POSTS WHERE (POSTS.username "
+					+ "= '"+username+"'" + "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
 		}
 		
 		return res;
 	}
 
 	// Borrar un post de un usuario
-	public Response deletePost(int id)throws ClassNotFoundException, SQLException {
+	public Response deletePost(String username, int id)throws ClassNotFoundException, SQLException {
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 
 		try {
-			ResultSet comp = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POST.id="
-					+ "'"+id+"'");
+			ResultSet comp = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.id="
+					+ "'"+id+"' AND POSTS.username='"+username+"');");
+
 			if (comp.next()){
-				int res = sta.executeUpdate("DELETE FROM RestBBDD.POSTS WHERE POST.id="
-						+ "'"+id+"'");
+				int res = sta.executeUpdate("DELETE FROM RestBBDD.POSTS WHERE (POSTS.id="
+						+ "'"+id+"' AND POSTS.username='"+username+"');");				
 			}
 			else
 				return Response.status(Response.Status.NOT_ACCEPTABLE).build();
@@ -253,35 +326,14 @@ public class BBDD {
 		}
 		return Response.status(Response.Status.OK).build();
 	}
-
-	// GET Xml
-	public List<Post> getXml(String username) throws ClassNotFoundException, SQLException {
-
-		List<Post> Posts = new ArrayList<Post>();
-
-		Connection con = UPMConnection();
-		Statement sta = con.createStatement();
-		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POSTS.username= '"+username+"'");
-		//TipoPost Post = new TipoPost();
-		Post Xmlpost = new Post();
-
-		while (res.next()) {
-
-			Xmlpost.setId(res.getInt(1));
-			Xmlpost.setUsername(res.getString(2));
-			Xmlpost.setDate_post(res.getString(3));
-			Xmlpost.setUrl(res.getString(4));
-			Xmlpost.setDescription(res.getString(5));
-
-			Posts.add(Xmlpost);
-
-		}
-
-		return Posts;
-	}
-
+	
+	
+	///////////////////////////////
 	/* FUNCIONES DE FRIENDSHIPS */
+	///////////////////////////////
 
+	
+	
 	// Crea una relación de amistad
 	public Response createFriendship (String user1, String user2, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
 
@@ -326,17 +378,16 @@ public class BBDD {
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
 		Statement sta2 = con.createStatement();
+		
+		ResultSet verifyFriendship = getFriends(user1, 1, 1, user2);
 
-		ResultSet res = sta.executeQuery("SELECT FRIENDS.friend_id FROM RestBBDD.FRIENDS WHERE"
-				+ " FRIENDS.id_user1 ='"+user1+"' AND FRIENDS.id_user2 = '"+user2+"';");
-
-		if (!res.next()) {
+		if (!verifyFriendship.next()) {
 			// Si no existe, devolvemos 404 no existe dicha amistad.
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}else{
 			// Friendship existe. Borramos datos y devolvemos 200 si OK.
 			try {
-				int res2 = sta2.executeUpdate("DELETE FROM `RestBBDD`.`FRIENDS` WHERE `friend_id`='"+res.getString(1)+"';");
+				int res2 = sta2.executeUpdate("DELETE FROM `RestBBDD`.`FRIENDS` WHERE `friend_id`='"+verifyFriendship.getString(1)+"';");
 			} catch (SQLException e) {
 				return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
 			}
@@ -357,13 +408,13 @@ public class BBDD {
 
 			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.FRIENDS WHERE"
 					+ " (FRIENDS.id_user1 = '"+username+"' OR FRIENDS.id_user2 = '"+username+"') AND (id_user2 LIKE '%"+nameFilter+"%' or id_user1 LIKE '%"+nameFilter+"%')"
-					+ " LIMIT "+String.valueOf(end - start)+" OFFSET "+ String.valueOf(start) +";");
+					+ " LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
 			return res;
 
 		}else{
 			ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.FRIENDS WHERE"
 					+ " (FRIENDS.id_user1 ='"+username+"' OR FRIENDS.id_user2 = '"+username+"')"
-					+ " LIMIT "+ String.valueOf(end - start) +" OFFSET "+ String.valueOf(start)+";");
+					+ " LIMIT "+ String.valueOf(end - (start - 1)) +" OFFSET "+ String.valueOf(start - 1)+";");
 			return res;
 
 		}		
