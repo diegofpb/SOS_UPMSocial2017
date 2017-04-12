@@ -12,6 +12,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -35,7 +36,7 @@ public class Posts {
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 
-	public Response getPost(@PathParam ("user_id") String username, 
+	public Response getPosts(@PathParam ("user_id") String username, 
 			@QueryParam("start") @DefaultValue("1") String i, 
 			@QueryParam("end") @DefaultValue("10") String q,
 			@QueryParam("from") String d,
@@ -92,13 +93,40 @@ public class Posts {
 
 		GenericEntity<List<Post>> entity = new GenericEntity<List<Post>>(myPost) {};
 
-		return Response.status(Response.Status.OK).entity(entity)
-				.header("Location", uriInfo.getAbsolutePath().toString()).build();
+		return Response.status(Response.Status.OK).entity(entity).build();
 	}
 
 	@GET
+	@Path("/{post_id}")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getPost(@PathParam ("user_id") String username, 
+			@PathParam("post_id") int id
+			) throws ClassNotFoundException, SQLException {
+
+		BBDD bdconn = new BBDD();
+		ResultSet res;
+		
+		res = bdconn.getPost(username, id);
+			
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+		Post Post = new Post();
+		
+		if (!res.next()) {        
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}else{
+			Post.setId(res.getInt(1));
+			Post.setUsername(res.getString(2));
+			Post.setDate_post(sdf.format(res.getTimestamp(3)));
+			Post.setUrl(res.getString(4));
+			Post.setDescription(res.getString(5));				
+		}
+
+		return Response.status(Response.Status.OK).entity(Post).build();
+	}
+	
+	@GET
 	@Path("/count")
-	public Response countPost(@PathParam ("user_id") String username, 
+	public Response countPosts(@PathParam ("user_id") String username, 
 			@QueryParam("start") @DefaultValue("1") String i, 
 			@QueryParam("end") @DefaultValue("10") String q,
 			@QueryParam("from") String d,
@@ -160,6 +188,25 @@ public class Posts {
 					
 			BBDD bdconn = new BBDD();
 			return bdconn.deletePost(username,id);
+	}
+	
+	@PUT
+	@Path("/{post_id}")
+	public Response putPost(JAXBElement<Post> post,
+			@PathParam("user_id") String username,
+			@PathParam("post_id") int id) throws ClassNotFoundException, SQLException {
+
+		Post mypost = post.getValue();	
+		mypost.setUsername(username); // Forzamos para que no nos pasen otro usuario.
+
+		if(!username.equals(mypost.getUsername())){
+
+			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+		}
+
+		BBDD bdconn = new BBDD();
+
+		return bdconn.editPost(mypost, id, uriInfo);
 	}
 
 
