@@ -245,6 +245,19 @@ public class BBDD {
 
 	}
 
+	// Devuelve un post dado un usuario y un id.
+	public ResultSet getPost(String username, int id) throws ClassNotFoundException, SQLException{
+		
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		ResultSet res;
+		
+		res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+				+ "= '"+username+"' AND POSTS.id = '"+id+"');");
+		
+		return res;
+	}
+	
 	// Listar posts de un usuario
 	public ResultSet getPosts(String username, int start, int end,
 			Timestamp from, Timestamp to) throws ClassNotFoundException, SQLException{
@@ -327,7 +340,43 @@ public class BBDD {
 		return Response.status(Response.Status.OK).build();
 	}
 	
+	// Edita un post.
+	public Response editPost(Post post, int id, UriInfo uriInfo) throws ClassNotFoundException, SQLException{
+
+		Connection con = UPMConnection();
+		Statement sta = con.createStatement();
+		Statement sta2 = con.createStatement();
+		
+		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE "
+				+ "(POSTS.username = '"+post.getUsername()+"' "
+						+ "AND POSTS.id = '"+String.valueOf(id)+"');");
+
+		if (!res.next()) {
+			// Si no existe, devolvemos 404.
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}else{
+
+			// Usuario existe. Modificamos datos y devolvemos 200 si OK.
+			try {
+
+				int res2 = sta2.executeUpdate("UPDATE `RestBBDD`.`POSTS` SET "
+						+ "`date_post`='"+ post.getDate_post() +"', "
+						+ "`url`='"+ post.getUrl() +"', "
+						+ "`description`='"+ post.getDescription() +"' "
+						+ "WHERE `id`='"+String.valueOf(id)+"';");
+
+			} catch (SQLException e) {
+				return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+			}
+
+
+		}
+
+		return Response.status(Response.Status.OK).build();
+	}
 	
+
+
 	///////////////////////////////
 	/* FUNCIONES DE FRIENDSHIPS */
 	///////////////////////////////
