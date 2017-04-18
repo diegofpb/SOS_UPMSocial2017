@@ -2,6 +2,7 @@ package com.upmsocial;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import com.upmsocial.bbdd.BBDD;
 import com.upmsocial.models.Friendship;
+import com.upmsocial.models.Post;
 
 
 @Path("/users/{user_id}/friends")
@@ -93,7 +95,7 @@ public class Friends {
 		BBDD bdconn = new BBDD();
 		ResultSet res = bdconn.getFriends(username,1,1000,null); 
 		List<String> Friends = new ArrayList<String>();
-		List<Posts> Posts = new ArrayList<Posts>();
+		List<Post> Posts = new ArrayList<Post>();
 			
 		// Obtenemos en Friends una lista con todos los usernames de nuestros amigos.
 		while (res.next()){	
@@ -117,20 +119,36 @@ public class Friends {
 		// Obtenemos todos los post de cada usuario, filtrado por el texto.
 		for (String user : Friends) {
 			
-			//ResultSet res2 = bdconn.getPosts(user, 1, 1000, from, to, null); 
-
+			ResultSet res2 = bdconn.getPosts(user, 1, 1000, Timestamp.valueOf(d), Timestamp.valueOf(h), null); 
 			
-			System.out.println(user);
+			while (res2.next()){	
+				Post post = new Post();
+				post.setId(res2.getInt(1));
+				post.setUsername(res2.getString(2));
+				post.setDate_post(res2.getString(3));
+				post.setUrl(res2.getString(4));
+				post.setDescription(res2.getString(5));
+				
+				Posts.add(post);
+			}
+			
+		}
+		
+		// Si no hemos obtenido posts, Directamente devlvemos notfound.
+		if (Posts.isEmpty()){
+			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 		
 		
 		// Ordenamos con JAVA los posts .
+		// TODO: PENDIENTE
 		
 		// Limitamos la salida de posts.
-		
+		List<Post> finalPosts = Posts.subList(start-1,end-1);
+
 		
 		// Devolvemos la lista limitada y filtrada.
-	 	return Response.status(Response.Status.OK).entity(Posts).build();
+	 	return Response.status(Response.Status.OK).entity(finalPosts).build();
     }
 	
 	
