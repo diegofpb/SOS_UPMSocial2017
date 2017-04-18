@@ -78,7 +78,7 @@ public class BBDD {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
 		}
 
-		String uri = uriInfo.getAbsolutePath().toString() + "/" + user.getUsername();
+		String uri = uriInfo.getAbsolutePath().toString() + user.getUsername();
 
 		return Response.status(Response.Status.CREATED).header("Location", uri).build();
 	}
@@ -155,14 +155,12 @@ public class BBDD {
 				posts = getPosts(username, 1, 1000, null, null, null);
 				
 				while (posts.next()) {
-					System.out.println("Borrando post con id " + posts.getString(1));
 					Response postDelete = deletePost(username, Integer.parseInt(posts.getString(1)));
 				}		
 				
 				// Borramos friendships.
 				friends = getFriends(username, 1, 1000, null);
 				while (friends.next()) {
-					System.out.println("Borrando amistad con id " + friends.getString(1));
 					Response friendDelete = deleteFriendship(friends.getString(2),friends.getString(3));
 				}
 				

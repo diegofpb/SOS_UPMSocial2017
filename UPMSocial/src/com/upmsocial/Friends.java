@@ -117,7 +117,7 @@ public class Friends {
 		// Obtenemos todos los post de cada usuario, filtrado por el texto.
 		for (String user : Friends) {
 			
-			ResultSet res2 = bdconn.getPosts(user, 1, 1000, from, to, null); 
+			//ResultSet res2 = bdconn.getPosts(user, 1, 1000, from, to, null); 
 
 			
 			System.out.println(user);
