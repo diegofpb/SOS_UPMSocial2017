@@ -37,36 +37,34 @@ public class Posts {
 	@Produces(MediaType.APPLICATION_XML)
 
 	public Response getPosts(@PathParam ("user_id") String username, 
-			@QueryParam("start") @DefaultValue("1") String i, 
-			@QueryParam("end") @DefaultValue("10") String q,
+			@QueryParam("start") @DefaultValue("1") int start, 
+			@QueryParam("end") @DefaultValue("10") int end,
 			@QueryParam("from") String d,
 			@QueryParam("to") String h
 			) throws ClassNotFoundException, SQLException {
 
 		BBDD bdconn = new BBDD();
-		int start = Integer.parseInt(i);
-		int end = Integer.parseInt(q);
 		ResultSet res;
 		
 		if (d != null && h!=null){
 			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
-			res = bdconn.getPosts(username, start, end, from, to);
+			res = bdconn.getPosts(username, start, end, from, to, null);
 
 		}else if(d != null && h==null){
 			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 			Timestamp to = new Timestamp(System.currentTimeMillis());
-			res = bdconn.getPosts(username, start, end, from, to);
+			res = bdconn.getPosts(username, start, end, from, to, null);
 			
 		}else if(d == null && h !=null){
 			Timestamp from = new Timestamp(0);
 			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
-			res = bdconn.getPosts(username, start, end, from, to);
+			res = bdconn.getPosts(username, start, end, from, to, null);
 			
 		}else{
 			Timestamp from = new Timestamp(0);
 			Timestamp to = new Timestamp(System.currentTimeMillis());
-			res = bdconn.getPosts(username, start, end, from, to);
+			res = bdconn.getPosts(username, start, end, from, to, null);
 			
 		}
 

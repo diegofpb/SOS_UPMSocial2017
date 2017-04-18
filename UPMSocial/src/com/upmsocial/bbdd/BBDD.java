@@ -152,7 +152,7 @@ public class BBDD {
 			try {
 
 				// Borramos posts.
-				posts = getPosts(username, 1, 1000, null, null);
+				posts = getPosts(username, 1, 1000, null, null, null);
 				
 				while (posts.next()) {
 					System.out.println("Borrando post con id " + posts.getString(1));
@@ -260,7 +260,7 @@ public class BBDD {
 	
 	// Listar posts de un usuario
 	public ResultSet getPosts(String username, int start, int end,
-			Timestamp from, Timestamp to) throws ClassNotFoundException, SQLException{
+			Timestamp from, Timestamp to, String text_to_search) throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
