@@ -120,16 +120,18 @@ public class Friends {
 
 		// Obtenemos todos los post de cada usuario, filtrado por el texto.
 		for (String user : Friends) {
-
+			
+			//Queda casos de parametros 
 			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
 			ResultSet res2 = bdconn.getPosts(user, 1, 1000, from, to, null);
+			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
 
 			while (res2.next()) {
 				Post post = new Post();
 				post.setId(res2.getInt(1));
 				post.setUsername(res2.getString(2));
-				post.setDate_post(res2.getString(3));
+				post.setDate_post(sdf.format(res2.getTimestamp(3)));
 				post.setUrl(res2.getString(4));
 				post.setDescription(res2.getString(5));
 
@@ -151,8 +153,7 @@ public class Friends {
 			@Override
 			public int compare(Post p1, Post p2) {
 
-				return Timestamp.valueOf(p1.getDate_post()).
-						compareTo(Timestamp.valueOf(p2.getDate_post()));
+				return p1.getDate_post().compareTo(p2.getDate_post());
 
 			}
 		});
