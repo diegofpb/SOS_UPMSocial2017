@@ -287,7 +287,7 @@ public class BBDD {
 	}
 
 	// Contar posts de un usuario
-	public ResultSet countPosts(String username, int start, int end,
+	public ResultSet countPosts(String username,
 		Timestamp from, Timestamp to) throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();
@@ -296,21 +296,21 @@ public class BBDD {
 
 		if(from == null && to == null){
 			res = sta.executeQuery("SELECT COUNT(*) FROM RestBBDD.POSTS WHERE POSTS.username "
-					+ "= '"+username+"' LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+					+ "= '"+username+";");
 
 		} else if(from != null && to == null){
 			res = sta.executeQuery("SELECT COUNT(*) FROM RestBBDD.POSTS WHERE (POSTS.username "
 					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
-					+ "AND POSTS.date_post<= 'curdate()') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+					+ "AND POSTS.date_post<= 'curdate()')" + ";");
 
 		} else if(from != null && to != null){
 			res = sta.executeQuery("SELECT COUNT(*) FROM RestBBDD.POSTS WHERE (POSTS.username "
 					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
-					+ "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+					+ "AND POSTS.date_post<= '"+to+"');");
 
 		}else{
 			res = sta.executeQuery("SELECT COUNT(*) FROM RestBBDD.POSTS WHERE (POSTS.username "
-					+ "= '"+username+"'" + "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+					+ "= '"+username+"'" + "AND POSTS.date_post<= '"+to+"');");
 		}
 		
 		return res;

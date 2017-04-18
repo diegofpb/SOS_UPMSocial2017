@@ -47,9 +47,9 @@ public class Users {
 		while (res.next()) {
 			User Usuario = new User();
 
-			Usuario.setName(res.getString(1));
-			Usuario.setSurname(res.getString(2));
-			Usuario.setUsername(res.getString(3));
+			Usuario.setUsername(res.getString(1));
+			Usuario.setName(res.getString(2));
+			Usuario.setSurname(res.getString(3));
 
 			Users.add(Usuario);
 		}

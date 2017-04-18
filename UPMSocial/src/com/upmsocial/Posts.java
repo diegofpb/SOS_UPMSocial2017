@@ -124,37 +124,33 @@ public class Posts {
 	
 	@GET
 	@Path("/count")
-	public Response countPosts(@PathParam ("user_id") String username, 
-			@QueryParam("start") @DefaultValue("1") String i, 
-			@QueryParam("end") @DefaultValue("10") String q,
+	public Response countPosts(@PathParam ("user_id") String username,
 			@QueryParam("from") String d,
 			@QueryParam("to") String h
 			) throws ClassNotFoundException, SQLException {
 
 		BBDD bdconn = new BBDD();
-		int start = Integer.parseInt(i);
-		int end = Integer.parseInt(q);
 		ResultSet res;
 		
 		if (d != null && h!=null){
 			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
-			res = bdconn.countPosts(username, start, end, from, to);
+			res = bdconn.countPosts(username, from, to);
 
 		}else if(d != null && h==null){
 			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 			Timestamp to = new Timestamp(System.currentTimeMillis());
-			res = bdconn.countPosts(username, start, end, from, to);
+			res = bdconn.countPosts(username, from, to);
 			
 		}else if(d == null && h !=null){
 			Timestamp from = new Timestamp(0);
 			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
-			res = bdconn.countPosts(username, start, end, from, to);
+			res = bdconn.countPosts(username, from, to);
 			
 		}else{
 			Timestamp from = new Timestamp(0);
 			Timestamp to = new Timestamp(System.currentTimeMillis());
-			res = bdconn.countPosts(username, start, end, from, to);
+			res = bdconn.countPosts(username, from, to);
 			
 		}
 
