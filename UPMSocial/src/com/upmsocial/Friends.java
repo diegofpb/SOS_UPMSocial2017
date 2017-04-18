@@ -42,7 +42,7 @@ public class Friends {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getFriends(@PathParam("user_id") String username, @QueryParam("start") @DefaultValue("1") int start,
 			@QueryParam("end") @DefaultValue("10") int end, @QueryParam("filter_by_name") String nameFilter)
-			throws ClassNotFoundException, SQLException {
+					throws ClassNotFoundException, SQLException {
 
 		BBDD bdconn = new BBDD();
 		ResultSet res = bdconn.getFriends(username, start, end, nameFilter);
@@ -91,7 +91,7 @@ public class Friends {
 	public Response getFriendsPosts(@PathParam("user_id") String username,
 			@QueryParam("start") @DefaultValue("1") int start, @QueryParam("end") @DefaultValue("10") int end,
 			@QueryParam("from") String d, @QueryParam("to") String h, @QueryParam("filter_by_text") String textFilter)
-			throws ClassNotFoundException, SQLException {
+					throws ClassNotFoundException, SQLException {
 
 		BBDD bdconn = new BBDD();
 		ResultSet res = bdconn.getFriends(username, 1, 1000, null);
@@ -120,13 +120,26 @@ public class Friends {
 
 		// Obtenemos todos los post de cada usuario, filtrado por el texto.
 		for (String user : Friends) {
-			
-			//Queda casos de parametros 
-			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
-			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
-			ResultSet res2 = bdconn.getPosts(user, 1, 1000, from, to, null);
-			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
 
+			ResultSet res2;
+
+			if (d != null && h!=null){
+				Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
+				Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
+				res2 = bdconn.getPosts(user, 1, 1000, from, to, null);
+
+			}
+			else if(d == null && h!=null){
+				Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
+				res2 = bdconn.getPosts(user, 1, 1000, null, to, null);
+			}
+			else if(d != null && h ==null){
+				Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
+				res2 = bdconn.getPosts(user, 1, 1000, from, null, null);
+			}
+			else
+				res2 = bdconn.getPosts(user, 1, 1000, null, null, null);
+			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
 			while (res2.next()) {
 				Post post = new Post();
 				post.setId(res2.getInt(1));
@@ -137,6 +150,7 @@ public class Friends {
 
 				Posts.add(post);
 			}
+
 
 		}
 
@@ -157,7 +171,7 @@ public class Friends {
 
 			}
 		});
-		
+
 		Collections.reverse(Posts);
 
 		// Limitamos la salida de posts.
