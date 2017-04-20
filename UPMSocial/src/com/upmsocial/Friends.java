@@ -160,7 +160,6 @@ public class Friends {
 		}
 
 		// Ordenamos con JAVA los posts .
-		// TODO: PENDIENTE
 
 		Collections.sort(Posts, new Comparator<Post>() {
 
@@ -175,10 +174,10 @@ public class Friends {
 		Collections.reverse(Posts);
 
 		// Limitamos la salida de posts.
-		//List<Post> finalPosts = Posts.subList(start - 1, end - 1);
+		List<Post> finalPosts = Posts.subList(start - 1, end - 1);
 
 		// Devolvemos la lista limitada y filtrada.
-		GenericEntity<List<Post>> entity = new GenericEntity<List<Post>>(Posts) {};
+		GenericEntity<List<Post>> entity = new GenericEntity<List<Post>>(finalPosts) {};
 
 		return Response.status(Response.Status.OK).entity(entity).build();
 	}
