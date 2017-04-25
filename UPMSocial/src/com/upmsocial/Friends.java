@@ -174,10 +174,11 @@ public class Friends {
 		Collections.reverse(posts);
 
 		List<Post> finalPosts = new ArrayList<Post>();
-		end = Math.min(end, posts.size());
-		// Limitamos la salida de posts.
-		finalPosts = posts.subList(start - 1, end - 1);
-		
+		if(start < posts.size()){
+			end = Math.min(end, posts.size()+1);
+			// Limitamos la salida de posts.
+			finalPosts = posts.subList(start - 1, end - 1);
+		}
 		// Devolvemos la lista limitada y filtrada.
 		GenericEntity<List<Post>> entity = new GenericEntity<List<Post>>(finalPosts) {};
 
