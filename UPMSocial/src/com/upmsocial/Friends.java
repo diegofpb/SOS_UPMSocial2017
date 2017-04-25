@@ -95,8 +95,8 @@ public class Friends {
 
 		BBDD bdconn = new BBDD();
 		ResultSet res = bdconn.getFriends(username, 1, 1000, null);
-		List<String> Friends = new ArrayList<String>();
-		List<Post> Posts = new ArrayList<Post>();
+		List<String> friends = new ArrayList<String>();
+		List<Post> posts = new ArrayList<Post>();
 
 		// Obtenemos en Friends una lista con todos los usernames de nuestros
 		// amigos.
@@ -107,19 +107,19 @@ public class Friends {
 			Friendship.setId_user2(res.getString(3));
 
 			if (Friendship.getId_user1().equals(username)) {
-				Friends.add(Friendship.getId_user2());
+				friends.add(Friendship.getId_user2());
 			} else {
-				Friends.add(Friendship.getId_user1());
+				friends.add(Friendship.getId_user1());
 			}
 		}
 
 		// Si no tenemos amigos. Directamente devolvemos notfound.
-		if (Friends.isEmpty()) {
+		if (friends.isEmpty()) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 
 		// Obtenemos todos los post de cada usuario, filtrado por el texto.
-		for (String user : Friends) {
+		for (String user : friends) {
 
 			ResultSet res2;
 
@@ -148,20 +148,20 @@ public class Friends {
 				post.setUrl(res2.getString(4));
 				post.setDescription(res2.getString(5));
 
-				Posts.add(post);
+				posts.add(post);
 			}
 
 
 		}
 
 		// Si no hemos obtenido posts, Directamente devlvemos notfound.
-		if (Posts.isEmpty()) {
+		if (posts.isEmpty()) {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 
 		// Ordenamos con JAVA los posts .
 
-		Collections.sort(Posts, new Comparator<Post>() {
+		Collections.sort(posts, new Comparator<Post>() {
 
 			@Override
 			public int compare(Post p1, Post p2) {
@@ -171,11 +171,13 @@ public class Friends {
 			}
 		});
 
-		Collections.reverse(Posts);
+		Collections.reverse(posts);
 
+		List<Post> finalPosts = new ArrayList<Post>();
+		end = Math.min(end, posts.size());
 		// Limitamos la salida de posts.
-		List<Post> finalPosts = Posts.subList(start - 1, end - 1);
-
+		finalPosts = posts.subList(start - 1, end - 1);
+		
 		// Devolvemos la lista limitada y filtrada.
 		GenericEntity<List<Post>> entity = new GenericEntity<List<Post>>(finalPosts) {};
 
