@@ -4,3 +4,4 @@
 .recommenders
 .classpath
 UPMSocial/.settings/org.eclipse.core.resources.prefs
+oracle.eclipse.tools.glassfish.syslib.xml
