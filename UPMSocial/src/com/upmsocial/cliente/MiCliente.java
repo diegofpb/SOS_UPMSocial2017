@@ -44,7 +44,7 @@ public class MiCliente {
          */
         
         // Peticion 0 [DELETE] => Borrar usuarios de la red social para comenzar de 0.
-        System.out.println("Peticion 0 [DELETE] Dando de baja los perfiles de prueba anteriores (user_test y user_test2)...");
+        System.out.println("Peticion 0 [DELETE] Dando de baja los perfiles de prueba anteriores (user_test y user_test2) y demas...");
         Response del_res = target.path("api/v1/users/user_test")
                 .request()
                 .delete();
@@ -55,13 +55,36 @@ public class MiCliente {
         del_res = target.path("api/v1/users/user_test2")
                 .request()
                 .delete();
-        System.out.println("Estado: " + del_res.getStatus() +"\n");
+        System.out.println("Estado: " + del_res.getStatus());
+        del_res.close();
+        
+        del_res = target.path("api/v1/users/arecio_test")
+                .request()
+                .delete();
+        System.out.println("Estado: " + del_res.getStatus());
+        del_res.close();
+        
+        del_res = target.path("api/v1/users/henry_test")
+                .request()
+                .delete();
+        System.out.println("Estado: " + del_res.getStatus());
+        del_res.close();
+        
+        del_res = target.path("api/v1/users/elcuqui_test")
+                .request()
+                .delete();
+        System.out.println("Estado: " + del_res.getStatus());
         del_res.close();
         
         // Peticion 1 [POST] => Crear Usuario
-        System.out.println("Peticion 1 [POST] crear 2 usuarios de test...");
+        System.out.println("\nPeticion 1 [POST] crear 2 usuarios de test y 3 mas para otras pruebas...");
         User user_test = new User("User","Test","user_test");
         User user_test2 = new User("User2","Test2","user_test2");
+        User user_test3 = new User("Antonio","Recio","arecio_test");
+        User user_test4 = new User("Enrique","Pastor","henry_test");
+        User user_test5 = new User("Amador","Rivas","elcuqui_test");
+
+        
 
         Response response = target.path("api/v1/users")
                 .request()
@@ -76,6 +99,37 @@ public class MiCliente {
         response = target.path("api/v1/users")
                 .request()
                 .post(Entity.xml(user_test2));
+        
+        System.out.println("Estado: " + response.getStatus());
+        if (response.getStatus()==201){
+        	System.out.println("Location: " + response.getLocation()+"\n");
+        }
+        response.close();
+        
+        response = target.path("api/v1/users")
+                .request()
+                .post(Entity.xml(user_test3));
+        
+        System.out.println("Estado: " + response.getStatus());
+        if (response.getStatus()==201){
+        	System.out.println("Location: " + response.getLocation()+"\n");
+        }
+        response.close();
+        
+        response = target.path("api/v1/users")
+                .request()
+                .post(Entity.xml(user_test4));
+        
+        System.out.println("Estado: " + response.getStatus());
+        if (response.getStatus()==201){
+        	System.out.println("Location: " + response.getLocation()+"\n");
+        }
+        response.close();
+        
+        
+        response = target.path("api/v1/users")
+                .request()
+                .post(Entity.xml(user_test5));
         
         System.out.println("Estado: " + response.getStatus());
         if (response.getStatus()==201){
@@ -123,10 +177,7 @@ public class MiCliente {
         
         if (response.getStatus()==201){
         	System.out.println("Location: " + response.getLocation());
-        }
-        
-        URI location_post_1 = response.getLocation();
-        
+        }        
         
         response.close();
         
@@ -143,12 +194,16 @@ public class MiCliente {
         		.request()
                 .post(Entity.xml(post_test3));
          
+       
         System.out.println("Estado: " + response.getStatus());
 
         
         if (response.getStatus()==201){
         	System.out.println("Location: " + response.getLocation());
         }
+        
+        URI location_post_2 = response.getLocation();
+
         
         response.close();
         
@@ -170,6 +225,9 @@ public class MiCliente {
         	System.out.println("Location: " + response.getLocation());
         }
         
+        URI location_post_1 = response.getLocation();
+
+        
         response.close();
         
         
@@ -189,15 +247,15 @@ public class MiCliente {
         
         Post post_put_1 = new Post();
         post_put_1.setDate_post("2017-05-01");
-        post_put_1.setDescription("Post Modification");
-        post_put_1.setUrl("http://modificationpost.es");
-        post_put_1.setUsername("user_test");
+        post_put_1.setDescription("La que se avecina");
+        post_put_1.setUrl("http://lqsa.es");
+        post_put_1.setUsername("user_test2");
         
         String[] segments = location_post_1.getPath().split("/");
         String idStr = segments[segments.length-1];
         int id = Integer.parseInt(idStr);
                 
-        response = target.path("api/v1/users/user_test/posts/"+id)
+        response = target.path("api/v1/users/user_test2/posts/"+id)
         		.request()
                 .put(Entity.xml(post_put_1));
          
@@ -219,8 +277,13 @@ public class MiCliente {
         
         // Peticion 7 [DELETE] => Eliminar un post de un usuario.
       
+        String[] segments2 = location_post_2.getPath().split("/");
+        String idStr2 = segments2[segments2.length-1];
+        int id2= Integer.parseInt(idStr2);
+        
+        
         System.out.println("\nPeticion 7 [DELETE] => Eliminar un post de un usuario...");
-        response = target.path("api/v1/users/user_test/posts/"+id)
+        response = target.path("api/v1/users/user_test/posts/"+id2)
         		.request()
                 .delete();
         
@@ -276,21 +339,8 @@ public class MiCliente {
                 .get(String.class));
         
         
-
-        
-        
-        // Peticion 12 [DELETE] => Borrar un amigo
-        System.out.println("\nPeticion 12 [DELETE] => Borrar un amigo...");
-        response = target.path("api/v1/users/user_test/friends/user_test2")
-        		.request()
-                .delete();
-        
-        System.out.println("Estado: " + response.getStatus());
-        response.close();
-        
-        
-        // Peticion 13 [PUT] => Modificar datos del perfil de un usuario
-        System.out.println("\nPeticion 13 [PUT] => Modificar datos del perfil de un usuario...");
+        // Peticion 12 [PUT] => Modificar datos del perfil de un usuario
+        System.out.println("\nPeticion 12 [PUT] => Modificar datos del perfil de un usuario...");
         
         User user_put_1 = new User();
         user_put_1.setUsername("user_test");
@@ -305,6 +355,40 @@ public class MiCliente {
         System.out.println("Estado: " + response.getStatus());
 
         response.close();
+        
+        // Peticion 13 [GET] => Obtener lista de todos los usuarios
+        System.out.println("\nPeticion 13 [GET] => Obtener lista de todos los usuarios...");
+        
+        System.out.println(target.path("api/v1/users")
+                .request()
+                .accept(MediaType.APPLICATION_XML)
+                .get(String.class));
+        
+        // Peticion 14 [GET] => Buscar posibles amigos "Buscar a antonio"
+        System.out.println("\nPeticion 14 [GET] => Buscar posibles amigos \"Buscar a antonio\"...");
+        
+        System.out.println(target.path("api/v1/users")
+                .request()
+                .accept(MediaType.APPLICATION_XML)
+                .get(String.class));
+        
+        // Peticion 15 [GET] => Obtener la lista de posts publicados por amigos que contienen un determinado texto
+        System.out.println("\nPeticion 15 [GET] => Obtener la lista de posts publicados por amigos (de user_test) que contienen un determinado texto...");
+        
+        System.out.println(target.path("api/v1/users/user_test/friends/posts")
+        		.queryParam("filter_by_text", "avecina")
+                .request()
+                .accept(MediaType.APPLICATION_XML)
+                .get(String.class));
+        
+       /* // Peticion 16 [DELETE] => Borrar un amigo
+        System.out.println("\nPeticion 16 [DELETE] => Borrar un amigo...");
+        response = target.path("api/v1/users/user_test/friends/user_test2")
+        		.request()
+                .delete();
+        
+        System.out.println("Estado: " + response.getStatus());
+        response.close();*/
         
         
         // FIN DEL CLIENTE
