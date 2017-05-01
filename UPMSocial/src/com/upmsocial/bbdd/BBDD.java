@@ -262,26 +262,50 @@ public class BBDD {
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
-		ResultSet res;
+		ResultSet res = null;
 
-		if(from == null && to == null){
-			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POSTS.username "
-					+ "= '"+username+"' LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+		if (text_to_search == null){
+			if(from == null && to == null){
+				res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE POSTS.username "
+						+ "= '"+username+"' LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
 
-		} else if(from != null && to == null){
-			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
-					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
-					+ "AND POSTS.date_post<= 'curdate()') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+			} else if(from != null && to == null){
+				res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+						+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
+						+ "AND POSTS.date_post<= 'curdate()') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
 
-		} else if(from != null && to != null){
-			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
-					+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
-					+ "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+			} else if(from != null && to != null){
+				res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+						+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
+						+ "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
 
-		}else{
-			res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
-					+ "= '"+username+"'" + "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+			}else{
+				res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+						+ "= '"+username+"'" + "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+			}
+		} else {
+			// AQUI BUSCA CON PATRON TETO
+			if(from == null && to == null){
+				res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+						+ "= '"+username+"' AND POSTS.description LIKE '%"+text_to_search+"%') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+
+			} else if(from != null && to == null){
+				res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+						+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
+						+ "AND POSTS.date_post<= 'curdate()' AND POSTS.description LIKE '%"+text_to_search+"%') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+
+			} else if(from != null && to != null){
+				res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+						+ "= '"+username+"'" + "AND POSTS.date_post>= '"+from+"' "
+						+ "AND POSTS.date_post<= '"+to+"' AND POSTS.description LIKE '%"+text_to_search+"%') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+
+			}else{
+				res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
+						+ "= '"+username+"'" + "AND POSTS.date_post<= '"+to+"' AND POSTS.description LIKE '%"+text_to_search+"%') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
+			}
 		}
+		
+		
 		
 		return res;
 	}

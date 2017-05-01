@@ -126,33 +126,33 @@ public class Friends {
 			if (d != null && h!=null){
 				Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 				Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
-				res2 = bdconn.getPosts(user, 1, 1000, from, to, null);
+				res2 = bdconn.getPosts(user, 1, 1000, from, to, textFilter);
 
 			}
 			else if(d == null && h!=null){
 				Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
-				res2 = bdconn.getPosts(user, 1, 1000, null, to, null);
+				res2 = bdconn.getPosts(user, 1, 1000, null, to, textFilter);
 			}
 			else if(d != null && h ==null){
 				Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
-				res2 = bdconn.getPosts(user, 1, 1000, from, null, null);
+				res2 = bdconn.getPosts(user, 1, 1000, from, null, textFilter);
 			}
 			else
-				res2 = bdconn.getPosts(user, 1, 1000, null, null, null);
-			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-			while (res2.next()) {
-				Post post = new Post();
-				post.setId(res2.getInt(1));
-				post.setUsername(res2.getString(2));
-				post.setDate_post(sdf.format(res2.getTimestamp(3)));
-				post.setUrl(res2.getString(4));
-				post.setDescription(res2.getString(5));
+				res2 = bdconn.getPosts(user, 1, 1000, null, null, textFilter);
+				java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+				while (res2.next()) {
+					Post post = new Post();
+					post.setId(res2.getInt(1));
+					post.setUsername(res2.getString(2));
+					post.setDate_post(sdf.format(res2.getTimestamp(3)));
+					post.setUrl(res2.getString(4));
+					post.setDescription(res2.getString(5));
+	
+					posts.add(post);
+				}
 
-				posts.add(post);
+
 			}
-
-
-		}
 
 		// Si no hemos obtenido posts, Directamente devlvemos notfound.
 		if (posts.isEmpty()) {
@@ -174,7 +174,7 @@ public class Friends {
 		Collections.reverse(posts);
 
 		List<Post> finalPosts = new ArrayList<Post>();
-		if(start < posts.size()){
+		if(start <= posts.size()){
 			end = Math.min(end, posts.size()+1);
 			// Limitamos la salida de posts.
 			finalPosts = posts.subList(start - 1, end - 1);
