@@ -381,14 +381,23 @@ public class MiCliente {
                 .accept(MediaType.APPLICATION_XML)
                 .get(String.class));
         
-       /* // Peticion 16 [DELETE] => Borrar un amigo
-        System.out.println("\nPeticion 16 [DELETE] => Borrar un amigo...");
+        // Peticion 16 [GET] => Buscar a amigos entre los usuarios. Buscaremos a antonio.
+        System.out.println("\nPeticion 16 [GET] => Buscar a amigos entre los usuarios. Buscaremos a antonio...");
+        
+        System.out.println(target.path("api/v1/users")
+        		.queryParam("filter_by_text", "antonio")
+                .request()
+                .accept(MediaType.APPLICATION_XML)
+                .get(String.class));
+        
+        // Peticion 17 [DELETE] => Borrar un amigo
+        System.out.println("\nPeticion 17 [DELETE] => Borrar un amigo...");
         response = target.path("api/v1/users/user_test/friends/user_test2")
         		.request()
                 .delete();
         
         System.out.println("Estado: " + response.getStatus());
-        response.close();*/
+        response.close();
         
         
         // FIN DEL CLIENTE
