@@ -13,6 +13,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -37,12 +38,13 @@ public class Users {
 
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getUsers() throws ClassNotFoundException, SQLException  {
+	public Response getUsers(
+			@QueryParam("filter_by_text") String textFilter) throws ClassNotFoundException, SQLException  {
 
 		List<User> Users = new ArrayList<User>();
 
 		BBDD bdconn = new BBDD();
-		ResultSet res = bdconn.getUsers();
+		ResultSet res = bdconn.getUsers(textFilter);
 
 		while (res.next()) {
 			User Usuario = new User();

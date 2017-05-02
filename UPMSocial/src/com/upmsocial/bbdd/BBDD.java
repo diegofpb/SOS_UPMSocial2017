@@ -37,12 +37,19 @@ public class BBDD {
 	
 
 	// Devuelve todos los usuarios.
-	public ResultSet getUsers() throws ClassNotFoundException, SQLException{
+	public ResultSet getUsers(String text_to_search) throws ClassNotFoundException, SQLException{
 
 		Connection con = UPMConnection();
 		Statement sta = con.createStatement();
-		ResultSet res = sta.executeQuery("SELECT * FROM RestBBDD.USERS");
-
+		ResultSet res = null;
+		
+		if(text_to_search == null){
+			res = sta.executeQuery("SELECT * FROM RestBBDD.USERS");
+		}else{
+			res = sta.executeQuery("SELECT * FROM RestBBDD.USERS WHERE (USERS.username LIKE '%"+text_to_search+"%' OR "
+					+ "USERS.name LIKE '%"+text_to_search+"%' OR USERS.surname LIKE '%"+text_to_search+"%');");
+		}
+		
 		return res;
 	}
 
