@@ -24,6 +24,7 @@ Práctica 1 de una API RESTFull de la asignatura Sistemas Orientados a Servicios
 > Dado que la practica se basa en el diseño de una API RESTfull, en la implementación de un servidor y cliente para dicha API, hemos creado sólo lo necesario para que funcione correctamente.
 
 Parametros de la base de datos:
+
 - URI de la base de datos: `URL:3306`
 (Alojada en una Raspberry PI 2)
 - Nombre de la base de datos: `RestBBDD`.
@@ -31,6 +32,7 @@ Parametros de la base de datos:
 - Contraseña del usuario: `dieguito1`.
 
 Para la base de datos disponemos de tres tablas:
+
 - **USERS** (Tabla con datos de los usuarios).
 - **POSTS** (Tabla con posts de los usuarios).
 - **FRIENDS** (Tabla con amistades de los usuarios).
@@ -46,6 +48,7 @@ Entidad / Relación de la base de datos:
 Tabla donde se guardaran los usuarios de la plataforma.
 
 Los atributos de la tabla serían los siguientes:
+
 | username | name | surname |
 |:-:|:-:|:-:|
 | VARCHAR | VARCHAR | VARCHAR |
@@ -54,6 +57,7 @@ Los atributos de la tabla serían los siguientes:
 Tabla donde se guardaran los post o mensajes que creen los usuarios de la plataforma.
 
 Los atributos de la tabla serían los siguientes:
+
 | id | username | date_post | url | description |
 |:-:|:-:|:-:|:-:|:-:|
 | INT | VARCHAR | TIMESTAMP | VARCHAR | VARCHAR |
@@ -62,6 +66,7 @@ Los atributos de la tabla serían los siguientes:
 Relacion N:M de usuarios con usuarios. Nos hemos basado en el estilo de Twitter, de que usuarios siguen a usuarios, para mayor simpleza, siendo un usuario amigo de uno, pero este no es necesario que sea amigo del primero.
 
 Los atributos de la tabla serían los siguientes:
+
 | friend_id | id_user1 | id_user2 |
 |:-:|:-:|:-:|
 | INT | VARCHAR | VARCHAR |
