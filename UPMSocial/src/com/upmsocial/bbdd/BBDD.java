@@ -291,7 +291,7 @@ public class BBDD {
 						+ "= '"+username+"'" + "AND POSTS.date_post<= '"+to+"') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
 			}
 		} else {
-			// AQUI BUSCA CON PATRON TETO
+			// AQUI BUSCA CON PATRON TEXTO
 			if(from == null && to == null){
 				res = sta.executeQuery("SELECT * FROM RestBBDD.POSTS WHERE (POSTS.username "
 						+ "= '"+username+"' AND POSTS.description LIKE '%"+text_to_search+"%') LIMIT "+String.valueOf(end - (start - 1))+" OFFSET "+ String.valueOf(start - 1) +";");
@@ -362,9 +362,9 @@ public class BBDD {
 						+ "'"+id+"' AND POSTS.username='"+username+"');");				
 			}
 			else
-				return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+				return Response.status(Response.Status.NOT_FOUND).build();
 		} catch (SQLException e) {
-			return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+			return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
 		}
 		return Response.status(Response.Status.OK).build();
 	}

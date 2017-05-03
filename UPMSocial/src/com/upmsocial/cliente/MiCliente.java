@@ -230,6 +230,23 @@ public class MiCliente {
         
         response.close();
         
+        Post post_test4 = new Post();
+        post_test4.setDate_post("2017-05-02");
+        post_test4.setDescription("Mariscos Recio");
+        post_test4.setUrl("http://MariscosRecio.es");
+        post_test4.setUsername("arecio_test");
+                
+        response = target.path("api/v1/users/arecio_test/posts")
+        		.request()
+                .post(Entity.xml(post_test4));
+         
+        System.out.println("Estado: " + response.getStatus());
+
+        if (response.getStatus()==201){
+        	System.out.println("Location: " + response.getLocation());
+        }
+        
+        response.close();
         
         
         // Peticion 4 [GET] => Obtener posts de un usuario (user_test).
@@ -302,8 +319,17 @@ public class MiCliente {
                 .post(Entity.xml(friendship_1));
          
         System.out.println("Estado: " + response.getStatus());
+        
+        Friendship friendship_2 = new Friendship();
+        friendship_2.setId_user1("arecio_test");
+        friendship_2.setId_user2("henry_test");
       
-       
+        response = target.path("api/v1/users/arecio_test/friends/henry_test")
+        		.request()
+                .post(Entity.xml(friendship_2));
+        
+        System.out.println("Estado: " + response.getStatus());
+        
         // Peticion 9 [GET] => Obtener lista de todos amigos
         System.out.println("\nPeticion 9 [GET] => Obtener lista de amigos...");
         
@@ -329,7 +355,7 @@ public class MiCliente {
         
         
         		
-        // Peticion 11 [GET] => Obtener lista de todos amigos con filtro de nombre para amigo inexistente
+        // Peticion 11 [GET] => Obtener lista de todos amigos con filtro de nombre para amigo existente
         System.out.println("\nPeticion 11 [GET] => Obtener lista de todos amigos con filtro de nombre para amigo existente (user)...");
         
         System.out.println(target.path("api/v1/users/user_test/friends")
@@ -368,6 +394,7 @@ public class MiCliente {
         System.out.println("\nPeticion 14 [GET] => Buscar posibles amigos \"Buscar a antonio\"...");
         
         System.out.println(target.path("api/v1/users")
+        		.queryParam("filter_by_name", "antonio")
                 .request()
                 .accept(MediaType.APPLICATION_XML)
                 .get(String.class));
@@ -381,11 +408,10 @@ public class MiCliente {
                 .accept(MediaType.APPLICATION_XML)
                 .get(String.class));
         
-        // Peticion 16 [GET] => Buscar a amigos entre los usuarios. Buscaremos a antonio.
-        System.out.println("\nPeticion 16 [GET] => Buscar a amigos entre los usuarios. Buscaremos a antonio...");
+        // Peticion 16 [GET] => Obtener la lista de posts publicados por amigos.
+        System.out.println("\nPeticion 16 [GET] => Obtener la lista de posts publicados por amigos.");
         
-        System.out.println(target.path("api/v1/users")
-        		.queryParam("filter_by_text", "antonio")
+        System.out.println(target.path("api/v1/users/henry_test/friends/posts")
                 .request()
                 .accept(MediaType.APPLICATION_XML)
                 .get(String.class));

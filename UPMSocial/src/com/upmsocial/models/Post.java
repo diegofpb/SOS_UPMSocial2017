@@ -57,9 +57,4 @@ public class Post {
         this.description = description;
     }
     
-    // Por qué constructor vacío ??
-
-	// Tiene que tener id (int), username (string), date_post (timestamp), url
-	// (varchar), description (String).
-
 }

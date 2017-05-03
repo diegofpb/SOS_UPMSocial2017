@@ -45,7 +45,7 @@ public class Posts {
 
 		BBDD bdconn = new BBDD();
 		ResultSet res;
-		
+
 		if (d != null && h!=null){
 			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
@@ -55,24 +55,24 @@ public class Posts {
 			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 			Timestamp to = new Timestamp(System.currentTimeMillis());
 			res = bdconn.getPosts(username, start, end, from, to, null);
-			
+
 		}else if(d == null && h !=null){
 			Timestamp from = new Timestamp(0);
 			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
 			res = bdconn.getPosts(username, start, end, from, to, null);
-			
+
 		}else{
 			Timestamp from = new Timestamp(0);
 			Timestamp to = new Timestamp(System.currentTimeMillis());
 			res = bdconn.getPosts(username, start, end, from, to, null);
-			
+
 		}
 
 		List<Post> myPost = new ArrayList<Post>();
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
 
 		while (res.next()) {
-			
+
 			Post Post = new Post();
 
 			Post.setId(res.getInt(1));
@@ -103,12 +103,12 @@ public class Posts {
 
 		BBDD bdconn = new BBDD();
 		ResultSet res;
-		
+
 		res = bdconn.getPost(username, id);
-			
+
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
 		Post Post = new Post();
-		
+
 		if (!res.next()) {        
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}else{
@@ -121,7 +121,7 @@ public class Posts {
 
 		return Response.status(Response.Status.OK).entity(Post).build();
 	}
-	
+
 	@GET
 	@Path("/count")
 	public Response countPosts(@PathParam ("user_id") String username,
@@ -131,7 +131,7 @@ public class Posts {
 
 		BBDD bdconn = new BBDD();
 		ResultSet res;
-		
+
 		if (d != null && h!=null){
 			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
@@ -141,17 +141,17 @@ public class Posts {
 			Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 			Timestamp to = new Timestamp(System.currentTimeMillis());
 			res = bdconn.countPosts(username, from, to);
-			
+
 		}else if(d == null && h !=null){
 			Timestamp from = new Timestamp(0);
 			Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
 			res = bdconn.countPosts(username, from, to);
-			
+
 		}else{
 			Timestamp from = new Timestamp(0);
 			Timestamp to = new Timestamp(System.currentTimeMillis());
 			res = bdconn.countPosts(username, from, to);
-			
+
 		}
 
 		if (!res.next()) {        
@@ -162,7 +162,7 @@ public class Posts {
 		}
 
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response addPost(JAXBElement<Post> post) throws ClassNotFoundException, SQLException {
@@ -179,11 +179,11 @@ public class Posts {
 	@Path("/{post_id}")
 	public Response deletePost(@PathParam("user_id") String username,
 			@PathParam("post_id") int id) throws ClassNotFoundException, SQLException {
-					
-			BBDD bdconn = new BBDD();
-			return bdconn.deletePost(username,id);
+
+		BBDD bdconn = new BBDD();
+		return bdconn.deletePost(username,id);
 	}
-	
+
 	@PUT
 	@Path("/{post_id}")
 	public Response putPost(JAXBElement<Post> post,
@@ -202,6 +202,5 @@ public class Posts {
 
 		return bdconn.editPost(mypost, id, uriInfo);
 	}
-
 
 }

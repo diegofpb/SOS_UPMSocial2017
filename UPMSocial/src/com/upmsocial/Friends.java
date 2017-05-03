@@ -87,7 +87,7 @@ public class Friends {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getFriendsPosts(@PathParam("user_id") String username,
 			@QueryParam("start") @DefaultValue("1") int start, @QueryParam("end") @DefaultValue("10") int end,
-			@QueryParam("from") String d, @QueryParam("to") String h, @QueryParam("filter_by_text") String textFilter)
+			@QueryParam("from") String d, @QueryParam("to") String h, @QueryParam("text_to_search") String textToSearch)
 					throws ClassNotFoundException, SQLException {
 
 		BBDD bdconn = new BBDD();
@@ -123,19 +123,19 @@ public class Friends {
 			if (d != null && h!=null){
 				Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
 				Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
-				res2 = bdconn.getPosts(user, 1, 1000, from, to, textFilter);
+				res2 = bdconn.getPosts(user, 1, 1000, from, to, textToSearch);
 
 			}
 			else if(d == null && h!=null){
 				Timestamp to = Timestamp.valueOf(h + (" 00:00:00"));
-				res2 = bdconn.getPosts(user, 1, 1000, null, to, textFilter);
+				res2 = bdconn.getPosts(user, 1, 1000, null, to, textToSearch);
 			}
 			else if(d != null && h ==null){
 				Timestamp from = Timestamp.valueOf(d + (" 00:00:00"));
-				res2 = bdconn.getPosts(user, 1, 1000, from, null, textFilter);
+				res2 = bdconn.getPosts(user, 1, 1000, from, null, textToSearch);
 			}
 			else
-				res2 = bdconn.getPosts(user, 1, 1000, null, null, textFilter);
+				res2 = bdconn.getPosts(user, 1, 1000, null, null, textToSearch);
 				java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
 				while (res2.next()) {
 					Post post = new Post();
