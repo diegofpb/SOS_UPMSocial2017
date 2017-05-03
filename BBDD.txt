@@ -1,0 +1,76 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+CREATE SCHEMA IF NOT EXISTS `RestBBDD` DEFAULT CHARACTER SET utf8 ;
+USE `RestBBDD` ;
+
+----------------------------------------
+--            TABLA USERS
+----------------------------------------
+DROP TABLE IF EXISTS `USERS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `USERS` (
+  `username` varchar(20) NOT NULL,
+  `name` varchar(30) DEFAULT NULL,
+  `surname` varchar(30) NOT NULL,
+  PRIMARY KEY (`username`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+----------------------------------------
+--            TABLA POSTS
+----------------------------------------
+DROP TABLE IF EXISTS `POSTS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `POSTS` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) NOT NULL,
+  `date_post` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `url` varchar(100) NOT NULL,
+  `description` varchar(150) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `username` (`username`),
+  CONSTRAINT `POSTS_ibfk_1` FOREIGN KEY (`username`) REFERENCES `USERS` (`username`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=latin1;
+
+
+----------------------------------------
+--            TABLA FRIENDS
+----------------------------------------
+DROP TABLE IF EXISTS `FRIENDS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `FRIENDS` (
+  `friend_id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user1` varchar(20) NOT NULL,
+  `id_user2` varchar(20) NOT NULL,
+  PRIMARY KEY (`friend_id`),
+  UNIQUE KEY `friend_id` (`friend_id`),
+  KEY `id_user1` (`id_user1`),
+  KEY `id_user2` (`id_user2`),
+  CONSTRAINT `FRIENDS_ibfk_1` FOREIGN KEY (`id_user1`) REFERENCES `USERS` (`username`),
+  CONSTRAINT `FRIENDS_ibfk_2` FOREIGN KEY (`id_user2`) REFERENCES `USERS` (`username`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Gestor:
+
+MySQL Workbench 6.2 CE
+
+ 
+
+Parametros de la base de datos:
+
+-   URI de la base de datos: `diegofpb.asuscomm.com:3336`  
+    (Alojada en una Raspberry PI 2) (La base de datos también puede ser
+    utilizada desde una dirección local “localhost:3336”)
+
+-   Nombre de la base de datos: `RestBBDD`.
+
+-   Nombre del usuario: `upmsocialapi`.
+
+-   Contraseña del usuario: `dieguito1`.
+
+ 
