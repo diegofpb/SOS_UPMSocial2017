@@ -146,7 +146,7 @@ CREATE TABLE `FRIENDS` (
 | ------------- 	|-------------	| 
 | Descripción       | Devuelve una lista de usuarios de toda la red. Si se le incluye parámetro filter_by_text, solo devuelve los que coincidan con ese requisito. |
 | Método      	    | GET 			|
-| Cadena de consulta| <ul><li>filter_by_text= búsqueda por nombre</li></ul>
+| Cadena de consulta| <ul><li>filter\_by\_text= búsqueda por nombre</li></ul>
 | Cuerpo 			| Ninguno		|  
 | Devuelve      	| <ul><li>``200`` : OK y POX (usuarios/usuario+xml)</li><li>``404`` : Not Found</li></ul>|
 
@@ -201,7 +201,7 @@ CREATE TABLE `FRIENDS` (
 | ------------- 	|-------------			| 
 | Descripción       |   Obtiene los amigos de un usuario     |
 | Método      	| GET 						|
-| Cadena de consulta|  <ul><li>start= Desde número</li><li>end= Hasta número</li><li>filter_by_name= Búsqueda por nombre</li></ul>                       |
+| Cadena de consulta|  <ul><li>start= Desde número</li><li>end= Hasta número</li><li>filter\_by\_name= Búsqueda por nombre</li></ul>                       |
 | Cuerpo 			| Ninguno	|  
 | Devuelve      	| <ul><li>``200`` : OK</li><li>``404`` : Not Found</li></ul>|
 
@@ -232,7 +232,7 @@ CREATE TABLE `FRIENDS` (
 | ------------- 	|-------------			              | 
 | Descripción       | Obtiene los posts de un usuario     |
 | Método      	    | GET 						          |
-| Cadena de consulta| <ul><li>start= Desde número</li><li>end= Hasta número</li><li>from= Desde fecha Hasta fecha (YYYY-MM-DD)</li><li>to= Hasta fecha (YYYY-MM-DD)</li><li>text_to_search= Búsqueda de texto en la descripción de los posts.</li></ul>                      |
+| Cadena de consulta| <ul><li>start= Desde número</li><li>end= Hasta número</li><li>from= Desde fecha Hasta fecha (YYYY-MM-DD)</li><li>to= Hasta fecha (YYYY-MM-DD)</li><li>text\_to\_search= Búsqueda de texto en la descripción de los posts.</li></ul>                      |
 | Cuerpo 			| Ninguno	|  
 | Devuelve      	| <ul><li>``200`` : OK</li><li>``404`` : Not Found</li></ul>|
 
@@ -292,7 +292,7 @@ CREATE TABLE `FRIENDS` (
 | ------------- 	|-------------	| 
 | Descripción       | Obtiene los posts de los amigos de un usuario. |
 | Método      	    | GET				|
-| Cadena de consulta| <ul><li>start= Desde número</li><li>end= Hasta número</li><li>from= Desde fecha Hasta fecha (YYYY-MM-DD)</li><li>to= Hasta fecha (YYYY-MM-DD)</li><li>text_to_search= Búsqueda de texto en la descripción de los posts.</li></ul>                      |
+| Cadena de consulta| <ul><li>start= Desde número</li><li>end= Hasta número</li><li>from= Desde fecha Hasta fecha (YYYY-MM-DD)</li><li>to= Hasta fecha (YYYY-MM-DD)</li><li>text\_to\_search= Búsqueda de texto en la descripción de los posts.</li></ul>                      |
 | Cuerpo 			| Ninguno       |  
 | Devuelve      	| <ul><li>``200`` : OK</li><li>``404`` : Not Found</li></ul>|
 
